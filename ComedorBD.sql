@@ -410,6 +410,24 @@ BEGIN
 END;
 GO
 
+--procedure baja Pariente
+CREATE OR ALTER PROCEDURE PROC_bajaPariente
+@Pariente1 INT,
+@Pariente2 INT,
+@Success AS BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY
+        DELETE FROM Pariente 
+        WHERE Pariente1 = @Pariente1 AND Pariente2 = @Pariente2;
+        SET @Success = 1;
+    END TRY
+    BEGIN CATCH
+        SET @Success = 0;
+    END CATCH
+END;
+GO
+
 --procedure para cambiar o actualiza número de teléfono
 CREATE OR ALTER PROCEDURE PROC_actualizarCelular
 @IDUsuario INT,
