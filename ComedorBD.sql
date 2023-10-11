@@ -249,10 +249,10 @@ BEGIN
 	BEGIN TRY
         INSERT INTO Administrador(Nombre, Apellido1, Apellido2, ContrasenaAdmin)
 		VALUES (@Nombre, @Apellido1, @Apellido2, @ContrasenaAdmin);
-        SET @Success = 1; -- Set success to 1 if the INSERT is successful
+        SET @Success = 1;
     END TRY
     BEGIN CATCH
-        SET @Success = 0; -- Set success to 0 if there was an error during INSERT
+        SET @Success = 0;
     END CATCH
 END;
 GO
@@ -302,10 +302,10 @@ BEGIN
 	BEGIN TRY
         INSERT INTO Calificaciones(IDUsuario, FolioComedor, CalLimpieza, CalComida, CalAtencion)
 		VALUES (@IDUsuario, @FolioComedor, @CalLimpieza, @CalComida, @CalAtencion);
-        SET @Success = 1; -- Set success to 1 if the INSERT is successful
+        SET @Success = 1;
     END TRY
     BEGIN CATCH
-        SET @Success = 0; -- Set success to 0 if there was an error during INSERT
+        SET @Success = 0;
     END CATCH
 END;
 GO
