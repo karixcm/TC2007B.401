@@ -402,10 +402,10 @@ AS
 BEGIN
 	BEGIN TRY
         INSERT INTO Pariente(Pariente1, Pariente2) VALUES (@Pariente1, @Pariente2);
-        SET @Success = 1; -- Set success to 1 if the INSERT is successful
+        SET @Success = 1; 
     END TRY
     BEGIN CATCH
-        SET @Success = 0; -- Set success to 0 if there was an error during INSERT
+        SET @Success = 0;
     END CATCH
 END;
 GO
