@@ -485,6 +485,8 @@ INSERT INTO Nacionalidad(Nac) VALUES ('Belice');
 INSERT INTO Nacionalidad(Nac) VALUES ('Uruguay');
 INSERT INTO Nacionalidad(Nac) VALUES ('Argentina');
 INSERT INTO Nacionalidad(Nac) VALUES ('Republica Dominicana');
+INSERT INTO Nacionalidad(Nac) VALUES ('Nicaragua');
+INSERT INTO Nacionalidad(Nac) VALUES ('Costa Rica');
 GO
 
 INSERT INTO Condicion(Cond) VALUES ('Persona mayor de 60 años');
