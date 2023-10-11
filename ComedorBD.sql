@@ -495,31 +495,31 @@ EXEC PROC_altaUsuario 'Karla','Cruz','Muñiz','CUMK030414MDFRXRA9','Mexico','F','
 EXEC PROC_altaUsuario 'Leonel','Cruz','Alcántara','CUAL021125HVERXRA9','Guatemala','M','2002-11-25','No aplica','5532544142','leonelcalc@gmail.com', @Success OUTPUT;
 EXEC PROC_altaUsuario 'Erik','Soto','Cano','CUDKE85H4NME96HJF9', 'Mexico','M','2003-04-25','Persona perteneciente al colectivo LGBTQ+','5567890987','erik@mail.com', @Success OUTPUT;
 EXEC PROC_altaUsuario 'Brisa','Estrada','Ortiz','EAOBRUEIT854HFMD38','El Salvador','F','2003-05-28','Mujer embarazada','5589723423','brisa@mail.com', @Success OUTPUT;
-SELECT @Success AS Success
-SELECT* FROM Usuario
+--SELECT @Success AS Success
+--SELECT* FROM Usuario
 GO
 
 DECLARE @Success AS BIT
 EXEC PROC_altaUsuario 'Juan','Carlo','Carro','JCS234HDGS6789JDH7','Mexico','M','2002-06-12','No aplica','5567890987','juanca@gmail.com',@Success OUTPUT;
-SELECT @Success AS Success
+--SELECT @Success AS Success
 GO
 
 DECLARE @Success AS BIT
 EXEC PROC_altaUsuario 'Pepe','Luis','Moreno','HSJDKSEWUTYFHD7856','Mexico','M','2002-07-12','No aplica','5585463275','pepeca@gmail.com',@Success OUTPUT;
-SELECT @Success AS Success
+--SELECT @Success AS Success
 GO
 
 SELECT* FROM Usuario
 DECLARE @Success AS BIT
 EXEC PROC_actualizarCelular '1000','5567861076',@Success OUTPUT;
-SELECT @Success AS Success
-SELECT* FROM Usuario
+--SELECT @Success AS Success
+--SELECT* FROM Usuario
 GO
 
 DECLARE @Success AS BIT
 EXEC PROC_actualizarCorreo '1005','pepeluism@hotmail.com',@Success OUTPUT;
-SELECT @Success AS Success
-SELECT* FROM Usuario
+--SELECT @Success AS Success
+--SELECT* FROM Usuario
 GO
 
 DECLARE @Success AS BIT
