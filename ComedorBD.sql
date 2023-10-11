@@ -473,6 +473,18 @@ GO
 INSERT INTO Nacionalidad(Nac) VALUES ('Mexico');
 INSERT INTO Nacionalidad(Nac) VALUES ('Guatemala');
 INSERT INTO Nacionalidad(Nac) VALUES ('El Salvador');
+INSERT INTO Nacionalidad(Nac) VALUES ('Chile');
+INSERT INTO Nacionalidad(Nac) VALUES ('Brasil');
+INSERT INTO Nacionalidad(Nac) VALUES ('Perú');
+INSERT INTO Nacionalidad(Nac) VALUES ('Honduras');
+INSERT INTO Nacionalidad(Nac) VALUES ('Bolivia');
+INSERT INTO Nacionalidad(Nac) VALUES ('Venezuela');
+INSERT INTO Nacionalidad(Nac) VALUES ('Ecuador');
+INSERT INTO Nacionalidad(Nac) VALUES ('Cuba');
+INSERT INTO Nacionalidad(Nac) VALUES ('Belice');
+INSERT INTO Nacionalidad(Nac) VALUES ('Uruguay');
+INSERT INTO Nacionalidad(Nac) VALUES ('Argentina');
+INSERT INTO Nacionalidad(Nac) VALUES ('Republica Dominicana');
 GO
 
 INSERT INTO Condicion(Cond) VALUES ('Persona mayor de 60 años');
