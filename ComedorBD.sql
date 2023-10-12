@@ -347,9 +347,15 @@ BEGIN
 		DECLARE @EstadoActual AS INT;
 		SELECT @EstadoActual = (SELECT Estado FROM Comedor WHERE FolioComedor LIKE @FolioComedor);
 		IF (@EstadoActual = '200')
-			UPDATE Comedor 
-			SET Estado = '201' WHERE FolioComedor LIKE @FolioComedor;
-		SET @Success = 1;
+			BEGIN
+				UPDATE Comedor 
+				SET Estado = '201' WHERE FolioComedor LIKE @FolioComedor;
+				SET @Success = 1;
+			END
+		ELSE
+			BEGIN
+				SET @Success = 0;
+			END
 	END TRY
 	BEGIN CATCH
 		SET @Success = 0;
@@ -372,9 +378,15 @@ BEGIN
 		DECLARE @CondActual AS INT;
 		SELECT @CondActual = (SELECT Condicion FROM Usuario WHERE IDUsuario LIKE @FolioUsuario);
 		IF (@CondActual != @IDNuevaCond)
-			UPDATE Usuario
-			SET Condicion = @IDNuevaCond WHERE IDUsuario LIKE @FolioUsuario
-		SET @Success = 1;
+			BEGIN
+				UPDATE Usuario
+				SET Condicion = @IDNuevaCond WHERE IDUsuario LIKE @FolioUsuario
+				SET @Success = 1;
+			END
+		ELSE 
+			BEGIN
+				SET @Success = 0;
+			END
 	END TRY
 	BEGIN CATCH
 		SET @Success = 0;
@@ -540,7 +552,13 @@ BEGIN
 		SELECT @HashedPassword = @Salt + CONVERT(VARCHAR(64), (HASHBYTES('SHA2_256', @Salt+@Contrasena)), 2);
 
 		IF (@HashedPassword = @StoredPassword)
-			SET @Success = 1;
+			BEGIN
+				SET @Success = 1;
+			END
+		ELSE
+			BEGIN
+				SET @Success = 0;
+			END
 	END TRY
 	BEGIN CATCH
 		SET @Success = 0;
@@ -616,7 +634,13 @@ BEGIN
 		SELECT @HashedPassword = @Salt + CONVERT(VARCHAR(64), (HASHBYTES('SHA2_256', @Salt+@Contrasena)), 2);
 
 		IF (@HashedPassword = @StoredPassword)
-			SET @Success = 1;
+			BEGIN
+				SET @Success = 1;
+			END
+		ELSE
+			BEGIN
+				SET @Success = 0;
+			END
 	END TRY
 	BEGIN CATCH
 		SET @Success = 0;
@@ -783,9 +807,14 @@ EXEC PROC_bajaComedor '01', @Success OUTPUT;
 --SELECT* FROM Comedor
 GO
 
---SELECT* FROM Administrador
+SELECT* FROM Administrador
 DECLARE @Success AS BIT
-EXEC PROC_cambioContraAdmin '101','abcde1235','abcde1245', @Success OUTPUT;
+EXEC PROC_cambioContraAdmin '101','hola','hola', @Success OUTPUT;
 SELECT @Success AS Success
---SELECT* FROM Administrador
+SELECT* FROM Administrador
+GO
+
+DECLARE @Success AS BIT
+EXEC PROC_logInAdmin '101','holas',@Success OUTPUT;
+SELECT @Success AS Success
 GO
