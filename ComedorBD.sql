@@ -32,7 +32,7 @@ CREATE TABLE Administrador(
 	Nombre VARCHAR(50) NOT NULL,
 	Apellido1 VARCHAR(50) NOT NULL,
 	Apellido2 VARCHAR(50) NOT NULL,
-	ContrasenaAdmin VARCHAR(30) NOT NULL
+	ContrasenaAdmin VARCHAR(80) NOT NULL
 );
 
 --comedor abierto o cerrado
@@ -52,7 +52,7 @@ CREATE TABLE Comedor(
 	Ubicacion VARCHAR(80) NOT NULL,
 	Apertura DATE NOT NULL,
 	Usuario VARCHAR(10) NOT NULL, 
-	ContraComedor VARCHAR(30) NOT NULL,
+	ContraComedor VARCHAR(80) NOT NULL,
 	Estado INT NOT NULL
 		CONSTRAINT FK_Comedor_Estado FOREIGN KEY (Estado)
 		REFERENCES Estado(IDEstado)
@@ -156,19 +156,19 @@ BEGIN
 	DECLARE @Nombre AS VARCHAR(50);
 	DECLARE @Apellido1 AS VARCHAR(50);
 	DECLARE @Apellido2 AS VARCHAR(50);
-	DECLARE @ContrasenaAdmin AS VARCHAR(30);
+	DECLARE @ContrasenaAdmin AS VARCHAR(64);
 
 	SELECT @Nombre = (SELECT Nombre FROM inserted);
 	SELECT @Apellido1 = (SELECT Apellido1 FROM inserted);
 	SELECT @Apellido2 = (SELECT Apellido2 FROM inserted);
 	SELECT @ContrasenaAdmin = (SELECT ContrasenaAdmin FROM inserted);
 
-	DECLARE @Salt AS VARCHAR(15);
-	SELECT @Salt = CONVERT(VARCHAR(15), CRYPT_GEN_RANDOM(16), 2);
+	DECLARE @Salt AS VARCHAR(16);
+	SELECT @Salt = CONVERT(VARCHAR(16), CRYPT_GEN_RANDOM(8), 2);
 
 	--el select genera el password ya codificado
-	DECLARE @HashedPassword AS VARCHAR(30);
-	SELECT @HashedPassword = @Salt + CONVERT(VARCHAR(30), (HASHBYTES('SHA2_256', @Salt + @ContrasenaAdmin)), 2);
+	DECLARE @HashedPassword AS VARCHAR(80);
+	SELECT @HashedPassword = @Salt + CONVERT(VARCHAR(64), (HASHBYTES('SHA2_256', @Salt + @ContrasenaAdmin)), 2);
 	
 	INSERT INTO Administrador(Nombre, Apellido1, Apellido2, ContrasenaAdmin) 
 	VALUES (@Nombre, @Apellido1, @Apellido2, @HashedPassword);
@@ -186,7 +186,7 @@ BEGIN
 	DECLARE @Ubicacion AS VARCHAR(80);
 	DECLARE @Apertura AS DATE;
 	DECLARE @Usuario AS VARCHAR(10);
-	DECLARE @ContraComedor AS VARCHAR(15);
+	DECLARE @ContraComedor AS VARCHAR(64);
 	DECLARE @Estado AS INT;
 
 	SELECT @FolioComedor = (SELECT FolioComedor FROM inserted);
@@ -197,12 +197,12 @@ BEGIN
 	SELECT @ContraComedor = (SELECT ContraComedor FROM inserted);
 	SELECT @Estado = (SELECT Estado FROM inserted);
 
-	DECLARE @Salt AS VARCHAR(15);
-	SELECT @Salt = CONVERT(VARCHAR(15), CRYPT_GEN_RANDOM(16), 2);
+	DECLARE @Salt AS VARCHAR(16);
+	SELECT @Salt = CONVERT(VARCHAR(16), CRYPT_GEN_RANDOM(8), 2);
 
 	--el select genera el password ya codificado
-	DECLARE @HashedPassword AS VARCHAR(30);
-	SELECT @HashedPassword = @Salt + CONVERT(VARCHAR(30), (HASHBYTES('SHA2_256', @Salt + @ContraComedor)), 2);
+	DECLARE @HashedPassword AS VARCHAR(80);
+	SELECT @HashedPassword = @Salt + CONVERT(VARCHAR(64), (HASHBYTES('SHA2_256', @Salt + @ContraComedor)), 2);
 	
 	INSERT INTO Comedor(FolioComedor, Nombre, Ubicacion, Apertura, Usuario, ContraComedor, Estado) 
 	VALUES (@FolioComedor, @Nombre, @Ubicacion, @Apertura, @Usuario, @HashedPassword, @Estado);
@@ -476,39 +476,36 @@ GO
 --procedure para cambiar contraseña Admin
 CREATE OR ALTER PROCEDURE PROC_cambioContra
 @IDAdmin INT,
-@ContraNueva VARCHAR(15),
+@ContraNueva VARCHAR(64),
 @Success BIT OUTPUT
 AS
 BEGIN
 	BEGIN TRY
-		DECLARE @Salt AS VARCHAR(15);
-		SELECT @Salt = CONVERT(VARCHAR(15), CRYPT_GEN_RANDOM(16), 2);
+		DECLARE @StoredPassword VARCHAR(80);
+		SELECT @StoredPassword = (SELECT ContrasenaAdmin FROM Administrador WHERE IDAdmin = @IDAdmin)
 
-		-- El select genera el password ya codificado
-		DECLARE @HashedPassword AS VARCHAR(30);
-		SELECT @HashedPassword = @Salt + CONVERT(VARCHAR(30), (HASHBYTES('SHA2_256', @Salt + @ContraNueva)), 2);
+		DECLARE @Salt AS VARCHAR(16);
+		SELECT @Salt = SUBSTRING(@StoredPassword, 1, 16);
 
-		DECLARE @ContraActual AS VARCHAR(30);
-		SELECT @ContraActual = (SELECT ContrasenaAdmin FROM Administrador WHERE IDAdmin = @IDAdmin);
+		DECLARE @HashedPassword AS VARCHAR(80);
+		SELECT @HashedPassword = @Salt + CONVERT(VARCHAR(64), (HASHBYTES('SHA2_256', @Salt+@ContraNueva)), 2);
 
-		-- Obtener la parte de la contraseña actual que no incluye el salt
-		DECLARE @ContraActualSinSalt AS VARCHAR(30);
-		SET @ContraActualSinSalt = SUBSTRING(@ContraActual, LEN(@Salt) + 1, 30);
+		IF (@HashedPassword != @StoredPassword)
+			BEGIN
+				DECLARE @SaltN AS VARCHAR(16);
+				SELECT @SaltN = CONVERT(VARCHAR(16), CRYPT_GEN_RANDOM(8), 2);
 
-		-- Obtener la parte de la nueva contraseña que no incluye el salt
-		DECLARE @ContraNuevaSinSalt AS VARCHAR(30);
-		SET @ContraNuevaSinSalt = SUBSTRING(@HashedPassword, LEN(@Salt) + 1, 30);
+				--el select genera el password ya codificado
+				DECLARE @HashedPasswordN AS VARCHAR(80);
+				SELECT @HashedPasswordN = @Salt + CONVERT(VARCHAR(64), (HASHBYTES('SHA2_256', @Salt + @ContraNueva)), 2);
 
-		IF (@ContraActualSinSalt != @ContraNuevaSinSalt)
-		BEGIN
-			UPDATE Administrador SET ContrasenaAdmin = @HashedPassword WHERE IDAdmin = @IDAdmin;
-			SET @Success = 1; -- Contraseña actual y nueva son iguales (sin el salt)
-		END
+				UPDATE Administrador SET ContrasenaAdmin = @HashedPasswordN WHERE IDAdmin LIKE @IDAdmin;
+				SET @Success = 1;
+			END
 		ELSE
-		BEGIN
-			SET @Success = 0;
-		END
-
+			BEGIN
+				SET @Success = 0;
+			END
 	END TRY
 	BEGIN CATCH
 		SET @Success = 0;
