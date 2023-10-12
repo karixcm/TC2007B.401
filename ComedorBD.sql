@@ -254,6 +254,7 @@ BEGIN
     BEGIN CATCH
         SET @Success = 0;
     END CATCH
+	RETURN @Success
 END;
 GO
 
@@ -286,6 +287,7 @@ BEGIN
 	BEGIN CATCH
 		SET @Success = 0;
 	END CATCH
+	RETURN @Success
 END;
 GO
 
@@ -307,6 +309,7 @@ BEGIN
     BEGIN CATCH
         SET @Success = 0;
     END CATCH
+	RETURN @Success
 END;
 GO
 
@@ -330,6 +333,7 @@ BEGIN
 	BEGIN CATCH
 		SET @Success = 0;
 	END CATCH
+	RETURN @Success
 END;
 GO
 
@@ -350,6 +354,7 @@ BEGIN
 	BEGIN CATCH
 		SET @Success = 0;
 	END CATCH
+	RETURN @Success
 END;
 GO
 
@@ -374,6 +379,7 @@ BEGIN
 	BEGIN CATCH
 		SET @Success = 0;
 	END CATCH
+	RETURN @Success
 END;
 GO
 
@@ -390,6 +396,7 @@ BEGIN
 	BEGIN CATCH
 		SET	@Success = 0;
 	END CATCH
+	RETURN @Success
 END;
 GO
 
@@ -407,6 +414,7 @@ BEGIN
     BEGIN CATCH
         SET @Success = 0;
     END CATCH
+	RETURN @Success
 END;
 GO
 
@@ -425,6 +433,7 @@ BEGIN
     BEGIN CATCH
         SET @Success = 0;
     END CATCH
+	RETURN @Success
 END;
 GO
 
@@ -442,6 +451,7 @@ BEGIN
 	BEGIN CATCH
 		SET @Success = 0;
 	END CATCH
+	RETURN @Success
 END;
 GO
 
@@ -459,6 +469,51 @@ BEGIN
 	BEGIN CATCH
 		SET @Success = 0;
 	END CATCH
+	RETURN @Success
+END;
+GO
+
+--procedure para cambiar contraseña Admin
+CREATE OR ALTER PROCEDURE PROC_cambioContra
+@IDAdmin INT,
+@ContraNueva VARCHAR(15),
+@Success BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY
+		DECLARE @Salt AS VARCHAR(15);
+		SELECT @Salt = CONVERT(VARCHAR(15), CRYPT_GEN_RANDOM(16), 2);
+
+		-- El select genera el password ya codificado
+		DECLARE @HashedPassword AS VARCHAR(30);
+		SELECT @HashedPassword = @Salt + CONVERT(VARCHAR(30), (HASHBYTES('SHA2_256', @Salt + @ContraNueva)), 2);
+
+		DECLARE @ContraActual AS VARCHAR(30);
+		SELECT @ContraActual = (SELECT ContrasenaAdmin FROM Administrador WHERE IDAdmin = @IDAdmin);
+
+		-- Obtener la parte de la contraseña actual que no incluye el salt
+		DECLARE @ContraActualSinSalt AS VARCHAR(30);
+		SET @ContraActualSinSalt = SUBSTRING(@ContraActual, LEN(@Salt) + 1, 30);
+
+		-- Obtener la parte de la nueva contraseña que no incluye el salt
+		DECLARE @ContraNuevaSinSalt AS VARCHAR(30);
+		SET @ContraNuevaSinSalt = SUBSTRING(@HashedPassword, LEN(@Salt) + 1, 30);
+
+		IF (@ContraActualSinSalt != @ContraNuevaSinSalt)
+		BEGIN
+			UPDATE Administrador SET ContrasenaAdmin = @HashedPassword WHERE IDAdmin = @IDAdmin;
+			SET @Success = 1; -- Contraseña actual y nueva son iguales (sin el salt)
+		END
+		ELSE
+		BEGIN
+			SET @Success = 0;
+		END
+
+	END TRY
+	BEGIN CATCH
+		SET @Success = 0;
+	END CATCH
+	RETURN @Success
 END;
 GO
 
@@ -503,7 +558,7 @@ INSERT INTO Condicion(Cond) VALUES ('No aplica');
 --SELECT* FROM Condicion
 GO
 
-SELECT* FROM Usuario
+--SELECT* FROM Usuario
 DECLARE @Success AS BIT
 EXEC PROC_altaUsuario 'Karla','Cruz','Muñiz','CUMK030414MDFRXRA9','Mexico','F','2003-04-14','No aplica','5567866976','karla.cruzmz@gmail.com', @Success OUTPUT;
 EXEC PROC_altaUsuario 'Leonel','Cruz','Alcántara','CUAL021125HVERXRA9','Guatemala','M','2002-11-25','No aplica','5532544142','leonelcalc@gmail.com', @Success OUTPUT;
@@ -523,7 +578,7 @@ EXEC PROC_altaUsuario 'Pepe','Luis','Moreno','HSJDKSEWUTYFHD7856','Mexico','M','
 --SELECT @Success AS Success
 GO
 
-SELECT* FROM Usuario
+--SELECT* FROM Usuario
 DECLARE @Success AS BIT
 EXEC PROC_actualizarCelular '1000','5567861076',@Success OUTPUT;
 --SELECT @Success AS Success
@@ -618,4 +673,11 @@ DECLARE @Success AS BIT
 EXEC PROC_bajaComedor '01', @Success OUTPUT;
 --SELECT @Success AS Success
 --SELECT* FROM Comedor
+GO
+
+SELECT* FROM Administrador
+DECLARE @Success AS BIT
+EXEC PROC_cambioContra '101','abcde1234', @Success OUTPUT;
+SELECT @Success AS Success
+SELECT* FROM Administrador
 GO
