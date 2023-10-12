@@ -139,6 +139,7 @@ CREATE TABLE Calificaciones(
 		REFERENCES Comedor(FolioComedor)
 		ON UPDATE NO ACTION
 		ON DELETE NO ACTION,
+	Fecha DATE NOT NULL,
 	CalLimpieza INT NOT NULL,
 	CalComida INT NOT NULL,
 	CalAtencion INT NOT NULL
@@ -295,6 +296,7 @@ GO
 CREATE OR ALTER PROCEDURE PROC_calificar
 @IDUsuario INT,
 @FolioComedor INT,
+@Fecha DATE,
 @CalLimpieza INT,
 @CalComida INT,
 @CalAtencion INT,
@@ -302,8 +304,8 @@ CREATE OR ALTER PROCEDURE PROC_calificar
 AS
 BEGIN 
 	BEGIN TRY
-        INSERT INTO Calificaciones(IDUsuario, FolioComedor, CalLimpieza, CalComida, CalAtencion)
-		VALUES (@IDUsuario, @FolioComedor, @CalLimpieza, @CalComida, @CalAtencion);
+        INSERT INTO Calificaciones(IDUsuario, FolioComedor,Fecha, CalLimpieza, CalComida, CalAtencion)
+		VALUES (@IDUsuario, @FolioComedor,@Fecha, @CalLimpieza, @CalComida, @CalAtencion);
         SET @Success = 1;
     END TRY
     BEGIN CATCH
@@ -649,6 +651,33 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE PROC_comedorDelMes
+    @mes INT,
+    @anio INT
+AS
+BEGIN
+    WITH PromedioCategorias AS (
+        SELECT C.FolioComedor,
+               AVG(C.CalLimpieza) AS PromedioLimpieza,
+               AVG(C.CalComida) AS PromedioComida,
+               AVG(C.CalAtencion) AS PromedioAtencion
+        FROM Calificaciones AS C
+        WHERE MONTH(C.Fecha) = @mes AND YEAR(C.Fecha) = @anio
+        GROUP BY C.FolioComedor
+    )
+    SELECT TOP 3 FolioComedor, PromedioLimpieza, PromedioComida, PromedioAtencion
+    FROM PromedioCategorias
+    ORDER BY (PromedioLimpieza + PromedioComida + PromedioAtencion) DESC;
+END;
+GO
+
+
+
+
+
+
+
+
 USE ComedorBD;
 GO
 
@@ -689,6 +718,8 @@ INSERT INTO Condicion(Cond) VALUES ('Otra condición');
 INSERT INTO Condicion(Cond) VALUES ('No aplica');
 --SELECT* FROM Condicion
 GO
+
+
 
 --SELECT* FROM Usuario
 DECLARE @Success AS BIT
@@ -817,4 +848,23 @@ GO
 DECLARE @Success AS BIT
 EXEC PROC_logInAdmin '101','holas',@Success OUTPUT;
 SELECT @Success AS Success
+GO
+
+DECLARE @Success AS BIT
+EXEC PROC_calificar '1000','1','2022-10-12','4','5','3', @Success OUTPUT;
+EXEC PROC_calificar '1001','2','2022-10-12','5','2','1', @Success OUTPUT;
+EXEC PROC_calificar '1002','3','2022-10-12','5','5','4', @Success OUTPUT;
+EXEC PROC_calificar '1003','2','2022-10-12','4','4','3', @Success OUTPUT;
+EXEC PROC_calificar '1004','1','2022-10-12','3','5','3', @Success OUTPUT;
+EXEC PROC_calificar '1005','2','2022-10-12','3','4','4', @Success OUTPUT;
+EXEC PROC_calificar '1000','3','2022-10-12','2','5','2', @Success OUTPUT;
+EXEC PROC_calificar '1001','1','2022-10-12','4','5','3', @Success OUTPUT;
+EXEC PROC_calificar '1002','2','2022-10-12','1','2','5', @Success OUTPUT;
+EXEC PROC_calificar '1003','2','2022-10-12','5','4','1', @Success OUTPUT;
+EXEC PROC_calificar '1004','3','2022-10-12','4','3','3', @Success OUTPUT;
+EXEC PROC_calificar '1005','1','2022-10-12','3','3','2', @Success OUTPUT;
+SELECT @Success AS Success
+GO
+
+EXEC PROC_comedorDelMes '10','2022';
 GO
