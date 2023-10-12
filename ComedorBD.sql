@@ -514,8 +514,8 @@ BEGIN
 END;
 GO
 
---procedure para verificar inicio de sesión
-CREATE OR ALTER PROCEDURE PROC_logIn
+--procedure para verificar inicio de sesión del Administrador
+CREATE OR ALTER PROCEDURE PROC_logInAdmin
 @IDAdmin INT,
 @Contrasena VARCHAR(80),
 @Success BIT OUTPUT
