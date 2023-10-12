@@ -474,37 +474,45 @@ END;
 GO
 
 --procedure para cambiar contraseña Admin
-CREATE OR ALTER PROCEDURE PROC_cambioContra
+CREATE OR ALTER PROCEDURE PROC_cambioContraAdmin
 @IDAdmin INT,
 @ContraNueva VARCHAR(64),
+@RepContraNueva VARCHAR(64),
 @Success BIT OUTPUT
 AS
 BEGIN
 	BEGIN TRY
-		DECLARE @StoredPassword VARCHAR(80);
-		SELECT @StoredPassword = (SELECT ContrasenaAdmin FROM Administrador WHERE IDAdmin = @IDAdmin)
-
-		DECLARE @Salt AS VARCHAR(16);
-		SELECT @Salt = SUBSTRING(@StoredPassword, 1, 16);
-
-		DECLARE @HashedPassword AS VARCHAR(80);
-		SELECT @HashedPassword = @Salt + CONVERT(VARCHAR(64), (HASHBYTES('SHA2_256', @Salt+@ContraNueva)), 2);
-
-		IF (@HashedPassword != @StoredPassword)
+		IF (@ContraNueva != @RepContraNueva)
 			BEGIN
-				DECLARE @SaltN AS VARCHAR(16);
-				SELECT @SaltN = CONVERT(VARCHAR(16), CRYPT_GEN_RANDOM(8), 2);
-
-				--el select genera el password ya codificado
-				DECLARE @HashedPasswordN AS VARCHAR(80);
-				SELECT @HashedPasswordN = @Salt + CONVERT(VARCHAR(64), (HASHBYTES('SHA2_256', @Salt + @ContraNueva)), 2);
-
-				UPDATE Administrador SET ContrasenaAdmin = @HashedPasswordN WHERE IDAdmin LIKE @IDAdmin;
-				SET @Success = 1;
+				SET @Success = 0;
 			END
 		ELSE
 			BEGIN
-				SET @Success = 0;
+				DECLARE @StoredPassword VARCHAR(80);
+				SELECT @StoredPassword = (SELECT ContrasenaAdmin FROM Administrador WHERE IDAdmin = @IDAdmin)
+
+				DECLARE @Salt AS VARCHAR(16);
+				SELECT @Salt = SUBSTRING(@StoredPassword, 1, 16);
+
+				DECLARE @HashedPassword AS VARCHAR(80);
+				SELECT @HashedPassword = @Salt + CONVERT(VARCHAR(64), (HASHBYTES('SHA2_256', @Salt+@ContraNueva)), 2);
+
+				IF (@HashedPassword != @StoredPassword)
+					BEGIN
+						DECLARE @SaltN AS VARCHAR(16);
+						SELECT @SaltN = CONVERT(VARCHAR(16), CRYPT_GEN_RANDOM(8), 2);
+
+						--el select genera el password ya codificado
+						DECLARE @HashedPasswordN AS VARCHAR(80);
+						SELECT @HashedPasswordN = @Salt + CONVERT(VARCHAR(64), (HASHBYTES('SHA2_256', @Salt + @ContraNueva)), 2);
+
+						UPDATE Administrador SET ContrasenaAdmin = @HashedPasswordN WHERE IDAdmin LIKE @IDAdmin;
+						SET @Success = 1;
+					END
+				ELSE
+					BEGIN
+						SET @Success = 0;
+					END
 			END
 	END TRY
 	BEGIN CATCH
@@ -524,6 +532,82 @@ BEGIN
 	BEGIN TRY
 		DECLARE @StoredPassword VARCHAR(80);
 		SELECT @StoredPassword = (SELECT ContrasenaAdmin FROM Administrador WHERE IDAdmin = @IDAdmin)
+
+		DECLARE @Salt AS VARCHAR(16);
+		SELECT @Salt = SUBSTRING(@StoredPassword, 1, 16);
+
+		DECLARE @HashedPassword AS VARCHAR(80);
+		SELECT @HashedPassword = @Salt + CONVERT(VARCHAR(64), (HASHBYTES('SHA2_256', @Salt+@Contrasena)), 2);
+
+		IF (@HashedPassword = @StoredPassword)
+			SET @Success = 1;
+	END TRY
+	BEGIN CATCH
+		SET @Success = 0;
+	END CATCH
+	RETURN @Success
+END;
+GO
+
+--procedure para cambiar contraseña Comedor
+CREATE OR ALTER PROCEDURE PROC_cambioContraComedor
+@FolioComedor INT,
+@ContraNueva VARCHAR(64),
+@RepContraNueva VARCHAR(64),
+@Success BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY
+		IF (@ContraNueva != @RepContraNueva)
+			BEGIN
+				SET @Success = 0;
+			END
+		ELSE
+			BEGIN
+				DECLARE @StoredPassword VARCHAR(80);
+				SELECT @StoredPassword = (SELECT ContraComedor FROM Comedor WHERE FolioComedor = @FolioComedor)
+
+				DECLARE @Salt AS VARCHAR(16);
+				SELECT @Salt = SUBSTRING(@StoredPassword, 1, 16);
+
+				DECLARE @HashedPassword AS VARCHAR(80);
+				SELECT @HashedPassword = @Salt + CONVERT(VARCHAR(64), (HASHBYTES('SHA2_256', @Salt+@ContraNueva)), 2);
+
+				IF (@HashedPassword != @StoredPassword)
+					BEGIN
+						DECLARE @SaltN AS VARCHAR(16);
+						SELECT @SaltN = CONVERT(VARCHAR(16), CRYPT_GEN_RANDOM(8), 2);
+
+						--el select genera el password ya codificado
+						DECLARE @HashedPasswordN AS VARCHAR(80);
+						SELECT @HashedPasswordN = @Salt + CONVERT(VARCHAR(64), (HASHBYTES('SHA2_256', @Salt + @ContraNueva)), 2);
+
+						UPDATE Comedor SET ContraComedor = @HashedPasswordN WHERE FolioComedor LIKE @FolioComedor;
+						SET @Success = 1;
+					END
+				ELSE
+					BEGIN
+						SET @Success = 0;
+					END
+			END
+	END TRY
+	BEGIN CATCH
+		SET @Success = 0;
+	END CATCH
+	RETURN @Success
+END;
+GO
+
+--procedure para verificar inicio de sesión del Comedor
+CREATE OR ALTER PROCEDURE PROC_logInComedor
+@FolioComedor INT,
+@Contrasena VARCHAR(80),
+@Success BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY
+		DECLARE @StoredPassword VARCHAR(80);
+		SELECT @StoredPassword = (SELECT ContraComedor FROM Comedor WHERE FolioComedor = FolioComedor)
 
 		DECLARE @Salt AS VARCHAR(16);
 		SELECT @Salt = SUBSTRING(@StoredPassword, 1, 16);
@@ -701,7 +785,7 @@ GO
 
 --SELECT* FROM Administrador
 DECLARE @Success AS BIT
-EXEC PROC_cambioContra '101','abcde1235', @Success OUTPUT;
---SELECT @Success AS Success
+EXEC PROC_cambioContraAdmin '101','abcde1235','abcde1245', @Success OUTPUT;
+SELECT @Success AS Success
 --SELECT* FROM Administrador
 GO
