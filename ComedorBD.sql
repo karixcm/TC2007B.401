@@ -514,6 +514,33 @@ BEGIN
 END;
 GO
 
+--procedure para verificar inicio de sesión
+CREATE OR ALTER PROCEDURE PROC_logIn
+@IDAdmin INT,
+@Contrasena VARCHAR(80),
+@Success BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY
+		DECLARE @StoredPassword VARCHAR(80);
+		SELECT @StoredPassword = (SELECT ContrasenaAdmin FROM Administrador WHERE IDAdmin = @IDAdmin)
+
+		DECLARE @Salt AS VARCHAR(16);
+		SELECT @Salt = SUBSTRING(@StoredPassword, 1, 16);
+
+		DECLARE @HashedPassword AS VARCHAR(80);
+		SELECT @HashedPassword = @Salt + CONVERT(VARCHAR(64), (HASHBYTES('SHA2_256', @Salt+@Contrasena)), 2);
+
+		IF (@HashedPassword = @StoredPassword)
+			SET @Success = 1;
+	END TRY
+	BEGIN CATCH
+		SET @Success = 0;
+	END CATCH
+	RETURN @Success
+END;
+GO
+
 USE ComedorBD;
 GO
 
@@ -672,9 +699,9 @@ EXEC PROC_bajaComedor '01', @Success OUTPUT;
 --SELECT* FROM Comedor
 GO
 
-SELECT* FROM Administrador
+--SELECT* FROM Administrador
 DECLARE @Success AS BIT
-EXEC PROC_cambioContra '101','abcde1234', @Success OUTPUT;
-SELECT @Success AS Success
-SELECT* FROM Administrador
+EXEC PROC_cambioContra '101','abcde1235', @Success OUTPUT;
+--SELECT @Success AS Success
+--SELECT* FROM Administrador
 GO
