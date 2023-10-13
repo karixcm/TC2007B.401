@@ -709,6 +709,7 @@ BEGIN
 	BEGIN CATCH
 		SET @Success = 0;
 	END CATCH
+	RETURN @Success
 END;
 GO
 
@@ -736,6 +737,7 @@ BEGIN
 	BEGIN CATCH
 		SET @Success = 0
 	END CATCH
+	RETURN @Success
 END;
 GO
 
@@ -763,6 +765,7 @@ BEGIN
 	BEGIN CATCH
 		SET @Success = 0
 	END CATCH
+	RETURN @Success
 END;
 GO
 
@@ -956,4 +959,6 @@ GO
 --EXEC PROC_comedorDelMes '10','2022';
 --GO
 
-
+DECLARE @Success AS BIT
+EXEC PROC_loginUsuarioID '1000', @Success OUTPUT;
+SELECT @Success AS Success
