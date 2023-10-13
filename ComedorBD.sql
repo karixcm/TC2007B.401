@@ -21,7 +21,7 @@ DROP TABLE IF EXISTS Comedor;
 DROP TABLE IF EXISTS Asistencia;
 DROP TABLE IF EXISTS Usuario;
 DROP TABLE IF EXISTS Pariente;
-DROP TABLE IF EXISTS Despensa;
+DROP TABLE IF EXISTS Inventario;
 DROP TABLE IF EXISTS Estado;
 DROP TABLE IF EXISTS Condicion;
 DROP TABLE IF EXISTS Nacionalidad;
@@ -116,8 +116,8 @@ CREATE TABLE Asistencia(
 		ON UPDATE NO ACTION
 );
 
-CREATE TABLE Despensa(
-	FechaIng DATE NOT NULL,
+CREATE TABLE Inventario(
+	FechaCad DATE NOT NULL,
 	Nombre VARCHAR(50) NOT NULL,
 	Cantidad INT NOT NULL,
 	Presentacion VARCHAR(50) NOT NULL,
@@ -240,11 +240,11 @@ GO
 
 --procedure para alta de un administrador
 CREATE OR ALTER PROCEDURE PROC_altaAdmin
-@Nombre VARCHAR(50),
-@Apellido1 VARCHAR(50),
-@Apellido2 VARCHAR(50),
-@ContrasenaAdmin VARCHAR(15),
-@Success AS BIT OUTPUT
+	@Nombre VARCHAR(50),
+	@Apellido1 VARCHAR(50),
+	@Apellido2 VARCHAR(50),
+	@ContrasenaAdmin VARCHAR(15),
+	@Success AS BIT OUTPUT
 AS
 BEGIN
 	BEGIN TRY
@@ -261,17 +261,17 @@ GO
 
 --procedure para alta de un usuario
 CREATE OR ALTER PROCEDURE PROC_altaUsuario
-@Nombre VARCHAR(50),
-@Apellido1 VARCHAR(50),
-@Apellido2 VARCHAR(50),
-@CURP CHAR(18),
-@Nacionalidad VARCHAR(30),
-@Sexo CHAR,
-@FechaNac DATE,
-@Condicion VARCHAR(50),
-@Cel VARCHAR(15),
-@Correo VARCHAR(30),
-@Success AS BIT OUTPUT
+	@Nombre VARCHAR(50),
+	@Apellido1 VARCHAR(50),
+	@Apellido2 VARCHAR(50),
+	@CURP CHAR(18),
+	@Nacionalidad VARCHAR(30),
+	@Sexo CHAR,
+	@FechaNac DATE,
+	@Condicion VARCHAR(50),
+	@Cel VARCHAR(15),
+	@Correo VARCHAR(30),
+	@Success AS BIT OUTPUT
 AS
 BEGIN
 	BEGIN TRY
@@ -294,13 +294,13 @@ GO
 
 --procedure para insertar una calificación
 CREATE OR ALTER PROCEDURE PROC_calificar
-@IDUsuario INT,
-@FolioComedor INT,
-@Fecha DATE,
-@CalLimpieza INT,
-@CalComida INT,
-@CalAtencion INT,
-@Success AS BIT OUTPUT
+	@IDUsuario INT,
+	@FolioComedor INT,
+	@Fecha DATE,
+	@CalLimpieza INT,
+	@CalComida INT,
+	@CalAtencion INT,
+	@Success AS BIT OUTPUT
 AS
 BEGIN 
 	BEGIN TRY
@@ -317,14 +317,14 @@ GO
 
 --procedure alta comedor
 CREATE OR ALTER PROCEDURE PROC_altaComedor
-@FolioComedor INT,
-@Nombre VARCHAR(50),
-@Ubicacion VARCHAR(80),
-@Apertura DATE,
-@Usuario VARCHAR(10),
-@ContraComedor VARCHAR(15),
-@Estado INT,
-@Success AS BIT OUTPUT
+	@FolioComedor INT,
+	@Nombre VARCHAR(50),
+	@Ubicacion VARCHAR(80),
+	@Apertura DATE,
+	@Usuario VARCHAR(10),
+	@ContraComedor VARCHAR(15),
+	@Estado INT,
+	@Success AS BIT OUTPUT
 AS
 BEGIN
 	BEGIN TRY
@@ -341,8 +341,8 @@ GO
 
 --procedure baja de un comedor
 CREATE OR ALTER PROCEDURE PROC_bajaComedor
-@FolioComedor INT,
-@Success AS BIT OUTPUT
+	@FolioComedor INT,
+	@Success AS BIT OUTPUT
 AS
 BEGIN
 	BEGIN TRY
@@ -368,9 +368,9 @@ GO
 
 --procedure para cambiar condición de un usuario
 CREATE OR ALTER PROCEDURE PROC_cambioCond
-@FolioUsuario INT,
-@NuevaCond AS VARCHAR(50),
-@Success AS BIT OUTPUT
+	@FolioUsuario INT,
+	@NuevaCond AS VARCHAR(50),
+	@Success AS BIT OUTPUT
 AS
 BEGIN
 	BEGIN TRY
@@ -399,8 +399,8 @@ GO
 
 --procedure baja de un administrador
 CREATE OR ALTER PROCEDURE PROC_bajaAdmin
-@FolioAdmin INT,
-@Success AS BIT OUTPUT
+	@FolioAdmin INT,
+	@Success AS BIT OUTPUT
 AS 
 BEGIN
 	BEGIN TRY
@@ -416,9 +416,9 @@ GO
 
 --procedure alta Pariente
 CREATE OR ALTER PROCEDURE PROC_altaPariente
-@Pariente1 INT,
-@Pariente2 INT,
-@Success AS BIT OUTPUT
+	@Pariente1 INT,
+	@Pariente2 INT,
+	@Success AS BIT OUTPUT
 AS
 BEGIN
 	BEGIN TRY
@@ -434,9 +434,9 @@ GO
 
 --procedure baja Pariente
 CREATE OR ALTER PROCEDURE PROC_bajaPariente
-@Pariente1 INT,
-@Pariente2 INT,
-@Success AS BIT OUTPUT
+	@Pariente1 INT,
+	@Pariente2 INT,
+	@Success AS BIT OUTPUT
 AS
 BEGIN
 	BEGIN TRY
@@ -453,9 +453,9 @@ GO
 
 --procedure para cambiar o actualiza número de teléfono
 CREATE OR ALTER PROCEDURE PROC_actualizarCelular
-@IDUsuario INT,
-@NuevoCelular VARCHAR(15),
-@Success AS BIT OUTPUT
+	@IDUsuario INT,
+	@NuevoCelular VARCHAR(15),
+	@Success AS BIT OUTPUT
 AS
 BEGIN
 	BEGIN TRY
@@ -471,9 +471,9 @@ GO
 
 --procedure para cambiar o actualizar correo electrónico
 CREATE OR ALTER PROCEDURE PROC_actualizarCorreo
-@IDUsuario INT,
-@NuevoCorreo VARCHAR(30),
-@Success AS BIT OUTPUT
+	@IDUsuario INT,
+	@NuevoCorreo VARCHAR(30),
+	@Success AS BIT OUTPUT
 AS
 BEGIN
 	BEGIN TRY
@@ -489,10 +489,10 @@ GO
 
 --procedure para cambiar contraseña Admin
 CREATE OR ALTER PROCEDURE PROC_cambioContraAdmin
-@IDAdmin INT,
-@ContraNueva VARCHAR(64),
-@RepContraNueva VARCHAR(64),
-@Success BIT OUTPUT
+	@IDAdmin INT,
+	@ContraNueva VARCHAR(64),
+	@RepContraNueva VARCHAR(64),
+	@Success BIT OUTPUT
 AS
 BEGIN
 	BEGIN TRY
@@ -538,9 +538,9 @@ GO
 
 --procedure para verificar inicio de sesión del Administrador
 CREATE OR ALTER PROCEDURE PROC_logInAdmin
-@IDAdmin INT,
-@Contrasena VARCHAR(80),
-@Success BIT OUTPUT
+	@IDAdmin INT,
+	@Contrasena VARCHAR(80),
+	@Success BIT OUTPUT
 AS
 BEGIN
 	BEGIN TRY
@@ -571,10 +571,10 @@ GO
 
 --procedure para cambiar contraseña Comedor
 CREATE OR ALTER PROCEDURE PROC_cambioContraComedor
-@FolioComedor INT,
-@ContraNueva VARCHAR(64),
-@RepContraNueva VARCHAR(64),
-@Success BIT OUTPUT
+	@FolioComedor INT,
+	@ContraNueva VARCHAR(64),
+	@RepContraNueva VARCHAR(64),
+	@Success BIT OUTPUT
 AS
 BEGIN
 	BEGIN TRY
@@ -620,9 +620,9 @@ GO
 
 --procedure para verificar inicio de sesión del Comedor
 CREATE OR ALTER PROCEDURE PROC_logInComedor
-@FolioComedor INT,
-@Contrasena VARCHAR(80),
-@Success BIT OUTPUT
+	@FolioComedor INT,
+	@Contrasena VARCHAR(80),
+	@Success BIT OUTPUT
 AS
 BEGIN
 	BEGIN TRY
@@ -651,7 +651,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE PROC_comedorDelMes
+CREATE OR ALTER PROCEDURE PROC_comedorDelMes
     @mes INT,
     @anio INT
 AS
@@ -671,12 +671,100 @@ BEGIN
 END;
 GO
 
+CREATE OR ALTER PROCEDURE PROC_agregarInventario
+	@FechaCad DATE,
+	@Nombre VARCHAR(50),
+	@Cantidad INT,
+	@Presentacion VARCHAR(50),
+	@FolioComedor INT,
+	@Success AS BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY
+		INSERT INTO Inventario(FechaCad, Nombre, Cantidad, Presentacion, FolioComedor)
+		VALUES (@FechaCad, @Nombre, @Cantidad, @Presentacion, @FolioComedor);
+		SET @Success = 1;
+	END TRY
+	BEGIN CATCH
+		SET @Success = 0;
+	END CATCH
+	RETURN @Success
+END;
+GO
 
+CREATE OR ALTER PROCEDURE PROC_actualizarInventario
+	@FechaCad DATE,
+	@Nombre VARCHAR(50),
+	@NuevaCant INT,
+	@FolioComedor INT,
+	@Success AS BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY
+		UPDATE Inventario
+		SET Cantidad = @NuevaCant 
+		WHERE FolioComedor LIKE @FolioComedor AND FechaCad LIKE @FechaCad AND Nombre LIKE @Nombre;
+		SET @Success = 1;
+	END TRY
+	BEGIN CATCH
+		SET @Success = 0;
+	END CATCH
+END;
+GO
 
+--procedure login usuario con el ID
+CREATE OR ALTER PROCEDURE PROC_loginUsuarioID
+	@IDUsuario INT,
+	@Success AS BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY
+		DECLARE @UserCount INT
+		SELECT @UserCount = COUNT(*) FROM Usuario WHERE IDUsuario = @IDUsuario
 
+		IF @UserCount > 0
+		BEGIN
+			-- El usuario existe
+			SET @Success = 1;
+		END
+		ELSE
+		BEGIN
+			-- El usuario no existe
+			SET @Success = 0;
+		END
+	END TRY
+	BEGIN CATCH
+		SET @Success = 0
+	END CATCH
+END;
+GO
 
+--procedure login usuario con el CURP
+CREATE OR ALTER PROCEDURE PROC_loginUsuarioCURP
+	@CURP CHAR(18),
+	@Success AS BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY
+		DECLARE @UserCount INT
+		SELECT @UserCount = COUNT(*) FROM Usuario WHERE CURP = @CURP
 
-
+		IF @UserCount > 0
+		BEGIN
+			-- El usuario existe
+			SET @Success = 1;
+		END
+		ELSE
+		BEGIN
+			-- El usuario no existe
+			SET @Success = 0;
+		END
+	END TRY
+	BEGIN CATCH
+		SET @Success = 0
+	END CATCH
+END;
+GO
 
 USE ComedorBD;
 GO
@@ -718,8 +806,6 @@ INSERT INTO Condicion(Cond) VALUES ('Otra condición');
 INSERT INTO Condicion(Cond) VALUES ('No aplica');
 --SELECT* FROM Condicion
 GO
-
-
 
 --SELECT* FROM Usuario
 DECLARE @Success AS BIT
@@ -838,16 +924,16 @@ EXEC PROC_bajaComedor '01', @Success OUTPUT;
 --SELECT* FROM Comedor
 GO
 
-SELECT* FROM Administrador
+--SELECT* FROM Administrador
 DECLARE @Success AS BIT
 EXEC PROC_cambioContraAdmin '101','hola','hola', @Success OUTPUT;
-SELECT @Success AS Success
-SELECT* FROM Administrador
+--SELECT @Success AS Success
+--SELECT* FROM Administrador
 GO
 
 DECLARE @Success AS BIT
 EXEC PROC_logInAdmin '101','holas',@Success OUTPUT;
-SELECT @Success AS Success
+--SELECT @Success AS Success
 GO
 
 DECLARE @Success AS BIT
@@ -856,15 +942,18 @@ EXEC PROC_calificar '1001','2','2022-10-12','5','2','1', @Success OUTPUT;
 EXEC PROC_calificar '1002','3','2022-10-12','5','5','4', @Success OUTPUT;
 EXEC PROC_calificar '1003','2','2022-10-12','4','4','3', @Success OUTPUT;
 EXEC PROC_calificar '1004','1','2022-10-12','3','5','3', @Success OUTPUT;
-EXEC PROC_calificar '1005','2','2022-10-12','3','4','4', @Success OUTPUT;
+EXEC PROC_calificar '1005','4','2022-10-12','3','4','4', @Success OUTPUT;
+EXEC PROC_calificar '1001','4','2022-10-12','2','4','2', @Success OUTPUT;
 EXEC PROC_calificar '1000','3','2022-10-12','2','5','2', @Success OUTPUT;
 EXEC PROC_calificar '1001','1','2022-10-12','4','5','3', @Success OUTPUT;
 EXEC PROC_calificar '1002','2','2022-10-12','1','2','5', @Success OUTPUT;
 EXEC PROC_calificar '1003','2','2022-10-12','5','4','1', @Success OUTPUT;
 EXEC PROC_calificar '1004','3','2022-10-12','4','3','3', @Success OUTPUT;
 EXEC PROC_calificar '1005','1','2022-10-12','3','3','2', @Success OUTPUT;
-SELECT @Success AS Success
+--SELECT @Success AS Success
 GO
 
-EXEC PROC_comedorDelMes '10','2022';
-GO
+--EXEC PROC_comedorDelMes '10','2022';
+--GO
+
+
