@@ -727,6 +727,13 @@ BEGIN
 		BEGIN
 			-- El usuario existe
 			SET @Success = 1;
+			SELECT U.IDUsuario, U.Nombre, U.Apellido1, U.Apellido2, U.CURP, 
+				N.Nac AS Nacionalidad, U.Sexo, U.FechaNac, C.Cond AS Condicion, 
+				U.Cel, U.Correo
+			FROM Usuario U
+			LEFT JOIN Nacionalidad N ON U.Nacionalidad = N.IDNacionalidad
+			LEFT JOIN Condicion C ON U.Condicion = C.IDCondicion
+			WHERE U.IDUsuario = @IDUsuario;
 		END
 		ELSE
 		BEGIN
@@ -755,6 +762,13 @@ BEGIN
 		BEGIN
 			-- El usuario existe
 			SET @Success = 1;
+			SELECT U.IDUsuario, U.Nombre, U.Apellido1, U.Apellido2, U.CURP, 
+				N.Nac AS Nacionalidad, U.Sexo, U.FechaNac, C.Cond AS Condicion, 
+				U.Cel, U.Correo
+			FROM Usuario U
+			LEFT JOIN Nacionalidad N ON U.Nacionalidad = N.IDNacionalidad
+			LEFT JOIN Condicion C ON U.Condicion = C.IDCondicion
+			WHERE U.CURP = @CURP;
 		END
 		ELSE
 		BEGIN
@@ -957,7 +971,7 @@ EXEC PROC_calificar '1005','1','2022-10-12','3','3','2', @Success OUTPUT;
 GO
 
 DECLARE @Success AS BIT
-EXEC PROC_loginUsuarioID '2000', @Success OUTPUT;
+EXEC PROC_loginUsuarioID '1000', @Success OUTPUT;
 SELECT @Success AS Success
 GO
 
