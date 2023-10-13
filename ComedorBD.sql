@@ -769,7 +769,7 @@ BEGIN
 END;
 GO
 
-USE ComedorBD;
+USE ComedorBD
 GO
 
 INSERT INTO Estado(Estado) VALUES ('Activo');
@@ -956,9 +956,15 @@ EXEC PROC_calificar '1005','1','2022-10-12','3','3','2', @Success OUTPUT;
 --SELECT @Success AS Success
 GO
 
+DECLARE @Success AS BIT
+EXEC PROC_loginUsuarioID '2000', @Success OUTPUT;
+SELECT @Success AS Success
+GO
+
 --EXEC PROC_comedorDelMes '10','2022';
 --GO
 
 DECLARE @Success AS BIT
-EXEC PROC_loginUsuarioID '1000', @Success OUTPUT;
-SELECT @Success AS Success
+EXEC PROC_loginUsuarioCURP 'CUMK030414MDFRXRA9', @Success OUTPUT;
+SELECT @Success as Success
+GO
