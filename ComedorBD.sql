@@ -651,6 +651,7 @@ BEGIN
 END;
 GO
 
+--procedure que genera el comedor del mes
 CREATE OR ALTER PROCEDURE PROC_comedorDelMes
     @mes INT,
     @anio INT
@@ -671,6 +672,7 @@ BEGIN
 END;
 GO
 
+--procedure para ingresar un nuevo alimento
 CREATE OR ALTER PROCEDURE PROC_agregarInventario
 	@FechaCad DATE,
 	@Nombre VARCHAR(50),
@@ -692,6 +694,7 @@ BEGIN
 END;
 GO
 
+--procedure para cambiar cantidad de algo en el inventario
 CREATE OR ALTER PROCEDURE PROC_actualizarInventario
 	@FechaCad DATE,
 	@Nombre VARCHAR(50),
@@ -725,7 +728,6 @@ BEGIN
 
 		IF @UserCount > 0
 		BEGIN
-			-- El usuario existe
 			SET @Success = 1;
 			SELECT U.IDUsuario, U.Nombre, U.Apellido1, U.Apellido2, U.CURP, 
 				N.Nac AS Nacionalidad, U.Sexo, U.FechaNac, C.Cond AS Condicion, 
@@ -737,7 +739,6 @@ BEGIN
 		END
 		ELSE
 		BEGIN
-			-- El usuario no existe
 			SET @Success = 0;
 		END
 	END TRY
@@ -760,7 +761,6 @@ BEGIN
 
 		IF @UserCount > 0
 		BEGIN
-			-- El usuario existe
 			SET @Success = 1;
 			SELECT U.IDUsuario, U.Nombre, U.Apellido1, U.Apellido2, U.CURP, 
 				N.Nac AS Nacionalidad, U.Sexo, U.FechaNac, C.Cond AS Condicion, 
@@ -772,7 +772,6 @@ BEGIN
 		END
 		ELSE
 		BEGIN
-			-- El usuario no existe
 			SET @Success = 0;
 		END
 	END TRY
@@ -780,6 +779,56 @@ BEGIN
 		SET @Success = 0
 	END CATCH
 	RETURN @Success
+END;
+GO
+
+--procedure que genera la tabla con la cuenta de usuarios por país al que pertenecen
+CREATE OR ALTER PROCEDURE PROC_statsPaises
+AS
+BEGIN
+    CREATE TABLE #TablaCuentaPorNacionalidad (
+        Nacionalidad VARCHAR(50),
+        Cuenta INT
+    )
+
+    INSERT INTO #TablaCuentaPorNacionalidad (Nacionalidad, Cuenta)
+    SELECT
+        N.Nac AS Nacionalidad,
+        COUNT(U.IDUsuario) AS Cuenta
+    FROM
+        Nacionalidad N
+    INNER JOIN
+        Usuario U ON N.IDNacionalidad = U.Nacionalidad
+    GROUP BY
+        N.Nac
+
+    SELECT * FROM #TablaCuentaPorNacionalidad
+    DROP TABLE #TablaCuentaPorNacionalidad
+END;
+GO
+
+--procedure que genera la tabla con la cuenta de usuarios por condición
+CREATE PROCEDURE PROC_statsCondicion
+AS
+BEGIN
+    CREATE TABLE #TablaCuentaPorCondicion (
+        Condicion VARCHAR(100),
+        Cuenta INT
+    )
+
+    INSERT INTO #TablaCuentaPorCondicion (Condicion, Cuenta)
+    SELECT
+        C.Cond AS Condicion,
+        COUNT(U.IDUsuario) AS Cuenta
+    FROM
+        Condicion C
+    INNER JOIN
+        Usuario U ON C.IDCondicion = U.Condicion
+    GROUP BY
+        C.Cond
+
+    SELECT * FROM #TablaCuentaPorCondicion
+    DROP TABLE #TablaCuentaPorCondicion
 END;
 GO
 
@@ -830,29 +879,14 @@ EXEC PROC_altaUsuario 'Karla','Cruz','Muñiz','CUMK030414MDFRXRA9','Mexico','F','
 EXEC PROC_altaUsuario 'Leonel','Cruz','Alcántara','CUAL021125HVERXRA9','Guatemala','M','2002-11-25','No aplica','5532544142','leonelcalc@gmail.com', @Success OUTPUT;
 EXEC PROC_altaUsuario 'Erik','Soto','Cano','CUDKE85H4NME96HJF9', 'Mexico','M','2003-04-25','Persona perteneciente al colectivo LGBTQ+','5567890987','erik@mail.com', @Success OUTPUT;
 EXEC PROC_altaUsuario 'Brisa','Estrada','Ortiz','EAOBRUEIT854HFMD38','El Salvador','F','2003-05-28','Mujer embarazada','5589723423','brisa@mail.com', @Success OUTPUT;
---SELECT @Success AS Success
---SELECT* FROM Usuario
-GO
-
-DECLARE @Success AS BIT
 EXEC PROC_altaUsuario 'Juan','Carlo','Carro','JCS234HDGS6789JDH7','Mexico','M','2002-06-12','No aplica','5567890987','juanca@gmail.com',@Success OUTPUT;
---SELECT @Success AS Success
-GO
-
-DECLARE @Success AS BIT
 EXEC PROC_altaUsuario 'Pepe','Luis','Moreno','HSJDKSEWUTYFHD7856','Mexico','M','2002-07-12','No aplica','5585463275','pepeca@gmail.com',@Success OUTPUT;
---SELECT @Success AS Success
-GO
-
---SELECT* FROM Usuario
-DECLARE @Success AS BIT
-EXEC PROC_actualizarCelular '1000','5567861076',@Success OUTPUT;
---SELECT @Success AS Success
---SELECT* FROM Usuario
-GO
-
-DECLARE @Success AS BIT
-EXEC PROC_actualizarCorreo '1005','pepeluism@hotmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Patricio','Gonzales','Romo','M6GDSTEXUASYWE7856','Mexico','M','2002-07-13','Persona en condición de calle','5657863426','pattgonro@gmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Lorena','Delgado','Mendonza','LDMREHDUS85746FHC7','Guatemala','F','2003-08-10','Trabajador/a informal','5576859403','lorenitadm1404@hotmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Lauren','Soria','Castro','HIJDJSNE38475HFJD9','Republica Dominicana','F','2001-03-14','Menor de edad','5674839203','lauso@mail.mx',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Santiago','Mondragon','Sanchez','SANTHI67DH47FH28EK','El Salvador','M','2001-10-19','Persona indígena','5647890987','santimond@yahoo.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Carla','Jimena','Ximena','CAJIXI345627DIKJ87','Guatemala','F','2000-06-02','Migrante o desplazado por conflictos','5512312345','carlajimxim@gmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Estefania','Luz','Miranda','KSJDHFY56473JFUR89','Mexico','F','1999-09-08','Otra condición','5587569867','estef@gmail.com',@Success OUTPUT;
 --SELECT @Success AS Success
 --SELECT* FROM Usuario
 GO
@@ -864,13 +898,6 @@ EXEC PROC_altaPariente '1002', '1003', @Success OUTPUT;
 --SELECT* FROM Pariente
 GO
 
-DECLARE @Success AS BIT
-EXEC PROC_cambioCond '1002','Menor de edad', @Success OUTPUT;
-EXEC PROC_cambioCond '1000','No aplica', @Success OUTPUT;
---SELECT @Success AS Success
---SELECT* FROM Usuario
-GO
-
 --SELECT* FROM Administrador
 DECLARE @Success AS BIT
 EXEC PROC_altaAdmin 'Ángel','Schiaffini','Rodríguez','angelito123', @Success OUTPUT;
@@ -880,12 +907,6 @@ EXEC PROC_altaAdmin 'Joahan','García','Fernandez','joahancin', @Success OUTPUT;
 --SELECT @Success AS Success
 --SELECT* FROM Administrador
 GO
-
---DECLARE @Success AS BIT
---EXEC PROC_bajaAdmin '103', @Success OUTPUT;
---SELECT* FROM Administrador
---SELECT @Success AS Success
---GO
 
 --SELECT* FROM Comedor
 DECLARE @Success AS BIT
@@ -936,24 +957,6 @@ EXEC PROC_altaComedor '42','Tierra de en Medio','Hacienda de la Flor #14 Col. Ti
 GO
 
 DECLARE @Success AS BIT
-EXEC PROC_bajaComedor '01', @Success OUTPUT;
---SELECT @Success AS Success
---SELECT* FROM Comedor
-GO
-
---SELECT* FROM Administrador
-DECLARE @Success AS BIT
-EXEC PROC_cambioContraAdmin '101','hola','hola', @Success OUTPUT;
---SELECT @Success AS Success
---SELECT* FROM Administrador
-GO
-
-DECLARE @Success AS BIT
-EXEC PROC_logInAdmin '101','holas',@Success OUTPUT;
---SELECT @Success AS Success
-GO
-
-DECLARE @Success AS BIT
 EXEC PROC_calificar '1000','1','2022-10-12','4','5','3', @Success OUTPUT;
 EXEC PROC_calificar '1001','2','2022-10-12','5','2','1', @Success OUTPUT;
 EXEC PROC_calificar '1002','3','2022-10-12','5','5','4', @Success OUTPUT;
@@ -968,17 +971,4 @@ EXEC PROC_calificar '1003','2','2022-10-12','5','4','1', @Success OUTPUT;
 EXEC PROC_calificar '1004','3','2022-10-12','4','3','3', @Success OUTPUT;
 EXEC PROC_calificar '1005','1','2022-10-12','3','3','2', @Success OUTPUT;
 --SELECT @Success AS Success
-GO
-
-DECLARE @Success AS BIT
-EXEC PROC_loginUsuarioID '1000', @Success OUTPUT;
-SELECT @Success AS Success
-GO
-
---EXEC PROC_comedorDelMes '10','2022';
---GO
-
-DECLARE @Success AS BIT
-EXEC PROC_loginUsuarioCURP 'CUMK030414MDFRXRA9', @Success OUTPUT;
-SELECT @Success as Success
 GO
