@@ -666,11 +666,34 @@ BEGIN
         WHERE MONTH(C.Fecha) = @mes AND YEAR(C.Fecha) = @anio
         GROUP BY C.FolioComedor
     )
-    SELECT TOP 3 FolioComedor, PromedioLimpieza, PromedioComida, PromedioAtencion
+    SELECT TOP 1 FolioComedor, PromedioLimpieza, PromedioComida, PromedioAtencion
     FROM PromedioCategorias
     ORDER BY (PromedioLimpieza + PromedioComida + PromedioAtencion) DESC;
 END;
 GO
+
+CREATE OR ALTER PROCEDURE PROC_ordenMejoresComedores
+    @mes INT,
+    @anio INT
+AS
+BEGIN
+    WITH PromedioCategorias AS (
+        SELECT C.FolioComedor,
+               AVG(C.CalLimpieza) AS PromedioLimpieza,
+               AVG(C.CalComida) AS PromedioComida,
+               AVG(C.CalAtencion) AS PromedioAtencion
+        FROM Calificaciones AS C
+        WHERE MONTH(C.Fecha) = @mes AND YEAR(C.Fecha) = @anio
+        GROUP BY C.FolioComedor
+    )
+    SELECT C.Nombre AS NombreComedor
+    FROM PromedioCategorias AS PC
+    INNER JOIN Comedor AS C ON PC.FolioComedor = C.FolioComedor
+    ORDER BY (PC.PromedioLimpieza + PC.PromedioComida + PC.PromedioAtencion) DESC;
+END;
+GO
+
+
 
 --procedure para ingresar un nuevo alimento
 CREATE OR ALTER PROCEDURE PROC_agregarInventario
@@ -788,10 +811,10 @@ AS
 BEGIN
     CREATE TABLE #TablaCuentaPorNacionalidad (
         Nacionalidad VARCHAR(50),
-        Cuenta INT
+        Usuarios INT
     )
 
-    INSERT INTO #TablaCuentaPorNacionalidad (Nacionalidad, Cuenta)
+    INSERT INTO #TablaCuentaPorNacionalidad (Nacionalidad, Usuarios)
     SELECT
         N.Nac AS Nacionalidad,
         COUNT(U.IDUsuario) AS Cuenta
@@ -808,15 +831,15 @@ END;
 GO
 
 --procedure que genera la tabla con la cuenta de usuarios por condición
-CREATE PROCEDURE PROC_statsCondicion
+CREATE OR ALTER PROCEDURE PROC_statsCondicion
 AS
 BEGIN
     CREATE TABLE #TablaCuentaPorCondicion (
         Condicion VARCHAR(100),
-        Cuenta INT
+        Usuarios INT
     )
 
-    INSERT INTO #TablaCuentaPorCondicion (Condicion, Cuenta)
+    INSERT INTO #TablaCuentaPorCondicion (Condicion, Usuarios)
     SELECT
         C.Cond AS Condicion,
         COUNT(U.IDUsuario) AS Cuenta
@@ -832,6 +855,32 @@ BEGIN
 END;
 GO
 
+--Procedure que cuenta a las personas registradas en el comedor que estén en situación de calle y sean mexicanas
+CREATE OR ALTER PROCEDURE PROC_contarPersonasSinHogarMexicanas
+AS
+BEGIN
+    DECLARE @Cuenta INT
+    SELECT @Cuenta = COUNT(U.IDUsuario)
+    FROM Usuario U
+    WHERE U.Condicion = (SELECT IDCondicion FROM Condicion WHERE Cond = 'Persona en condición de calle')
+    AND U.Nacionalidad = (SELECT IDNacionalidad FROM Nacionalidad WHERE Nac = 'México')
+    PRINT 'Número de personas en situación de calle de nacionalidad mexicana: ' + CAST(@Cuenta AS VARCHAR)
+END;
+GO
+
+--procedure para obtener todos familiares de un usuario
+CREATE OR ALTER PROCEDURE PROC_buscarFamiliares
+    @Pariente1 INT
+AS
+BEGIN
+    SELECT U.IDUsuario, U.Nombre, U.Apellido1, U.Apellido2
+    FROM Usuario AS U
+    INNER JOIN Pariente AS P ON U.IDUsuario = P.Pariente2
+    WHERE P.Pariente1 = @Pariente1;
+END;
+GO
+
+
 USE ComedorBD
 GO
 
@@ -840,7 +889,7 @@ INSERT INTO Estado(Estado) VALUES ('Cerrado');
 INSERT INTO Estado(Estado) VALUES ('Suspendido');
 GO
 
-INSERT INTO Nacionalidad(Nac) VALUES ('Mexico');
+INSERT INTO Nacionalidad(Nac) VALUES ('México');
 INSERT INTO Nacionalidad(Nac) VALUES ('Guatemala');
 INSERT INTO Nacionalidad(Nac) VALUES ('El Salvador');
 INSERT INTO Nacionalidad(Nac) VALUES ('Chile');
@@ -875,18 +924,18 @@ GO
 
 --SELECT* FROM Usuario
 DECLARE @Success AS BIT
-EXEC PROC_altaUsuario 'Karla','Cruz','Muñiz','CUMK030414MDFRXRA9','Mexico','F','2003-04-14','No aplica','5567866976','karla.cruzmz@gmail.com', @Success OUTPUT;
+EXEC PROC_altaUsuario 'Karla','Cruz','Muñiz','CUMK030414MDFRXRA9','México','F','2003-04-14','No aplica','5567866976','karla.cruzmz@gmail.com', @Success OUTPUT;
 EXEC PROC_altaUsuario 'Leonel','Cruz','Alcántara','CUAL021125HVERXRA9','Guatemala','M','2002-11-25','No aplica','5532544142','leonelcalc@gmail.com', @Success OUTPUT;
-EXEC PROC_altaUsuario 'Erik','Soto','Cano','CUDKE85H4NME96HJF9', 'Mexico','M','2003-04-25','Persona perteneciente al colectivo LGBTQ+','5567890987','erik@mail.com', @Success OUTPUT;
+EXEC PROC_altaUsuario 'Erik','Soto','Cano','CUDKE85H4NME96HJF9', 'México','M','2003-04-25','Persona perteneciente al colectivo LGBTQ+','5567890987','erik@mail.com', @Success OUTPUT;
 EXEC PROC_altaUsuario 'Brisa','Estrada','Ortiz','EAOBRUEIT854HFMD38','El Salvador','F','2003-05-28','Mujer embarazada','5589723423','brisa@mail.com', @Success OUTPUT;
-EXEC PROC_altaUsuario 'Juan','Carlo','Carro','JCS234HDGS6789JDH7','Mexico','M','2002-06-12','No aplica','5567890987','juanca@gmail.com',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Pepe','Luis','Moreno','HSJDKSEWUTYFHD7856','Mexico','M','2002-07-12','No aplica','5585463275','pepeca@gmail.com',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Patricio','Gonzales','Romo','M6GDSTEXUASYWE7856','Mexico','M','2002-07-13','Persona en condición de calle','5657863426','pattgonro@gmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Juan','Carlo','Carro','JCS234HDGS6789JDH7','México','M','2002-06-12','Persona en condición de calle','5567890987','juanca@gmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Pepe','Luis','Moreno','HSJDKSEWUTYFHD7856','México','M','2002-07-12','No aplica','5585463275','pepeca@gmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Patricio','Gonzales','Romo','M6GDSTEXUASYWE7856','México','M','2002-07-13','Persona en condición de calle','5657863426','pattgonro@gmail.com',@Success OUTPUT;
 EXEC PROC_altaUsuario 'Lorena','Delgado','Mendonza','LDMREHDUS85746FHC7','Guatemala','F','2003-08-10','Trabajador/a informal','5576859403','lorenitadm1404@hotmail.com',@Success OUTPUT;
 EXEC PROC_altaUsuario 'Lauren','Soria','Castro','HIJDJSNE38475HFJD9','Republica Dominicana','F','2001-03-14','Menor de edad','5674839203','lauso@mail.mx',@Success OUTPUT;
 EXEC PROC_altaUsuario 'Santiago','Mondragon','Sanchez','SANTHI67DH47FH28EK','El Salvador','M','2001-10-19','Persona indígena','5647890987','santimond@yahoo.com',@Success OUTPUT;
 EXEC PROC_altaUsuario 'Carla','Jimena','Ximena','CAJIXI345627DIKJ87','Guatemala','F','2000-06-02','Migrante o desplazado por conflictos','5512312345','carlajimxim@gmail.com',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Estefania','Luz','Miranda','KSJDHFY56473JFUR89','Mexico','F','1999-09-08','Otra condición','5587569867','estef@gmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Estefania','Luz','Miranda','KSJDHFY56473JFUR89','México','F','1999-09-08','Otra condición','5587569867','estef@gmail.com',@Success OUTPUT;
 --SELECT @Success AS Success
 --SELECT* FROM Usuario
 GO
@@ -894,6 +943,13 @@ GO
 DECLARE @Success AS BIT
 EXEC PROC_altaPariente '1000', '1001', @Success OUTPUT;
 EXEC PROC_altaPariente '1002', '1003', @Success OUTPUT;
+EXEC PROC_altaPariente '1000', '1002', @Success OUTPUT;
+EXEC PROC_altaPariente '1000', '1003', @Success OUTPUT;
+EXEC PROC_altaPariente '1000', '1004', @Success OUTPUT;
+EXEC PROC_altaPariente '1000', '1005', @Success OUTPUT;
+EXEC PROC_altaPariente '1001', '1007', @Success OUTPUT;
+EXEC PROC_altaPariente '1001', '1002', @Success OUTPUT;
+EXEC PROC_altaPariente '1001', '1003', @Success OUTPUT;
 --SELECT @Success AS Success
 --SELECT* FROM Pariente
 GO
