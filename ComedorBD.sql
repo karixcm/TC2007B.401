@@ -805,6 +805,72 @@ BEGIN
 END;
 GO
 
+--procedure login usuario con el celular
+CREATE OR ALTER PROCEDURE PROC_loginUsuarioCelular
+	@Celular VARCHAR(15),
+	@Success AS BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY
+		DECLARE @UserCount INT
+		SELECT @UserCount = COUNT(*) FROM Usuario WHERE Cel = @Celular
+
+		IF @UserCount > 0
+		BEGIN
+			SET @Success = 1;
+			SELECT U.IDUsuario, U.Nombre, U.Apellido1, U.Apellido2, U.CURP, 
+				N.Nac AS Nacionalidad, U.Sexo, U.FechaNac, C.Cond AS Condicion, 
+				U.Cel, U.Correo
+			FROM Usuario U
+			LEFT JOIN Nacionalidad N ON U.Nacionalidad = N.IDNacionalidad
+			LEFT JOIN Condicion C ON U.Condicion = C.IDCondicion
+			WHERE U.Cel = @Celular;
+		END
+		ELSE
+		BEGIN
+			SET @Success = 0;
+		END
+	END TRY
+	BEGIN CATCH
+		SET @Success = 0
+	END CATCH
+	RETURN @Success
+END;
+GO
+
+--procedure login usuario con el correo
+CREATE OR ALTER PROCEDURE PROC_loginUsuarioCorreo
+	@Correo VARCHAR(30),
+	@Success AS BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY
+		DECLARE @UserCount INT
+		SELECT @UserCount = COUNT(*) FROM Usuario WHERE Correo = @Correo
+
+		IF @UserCount > 0
+		BEGIN
+			SET @Success = 1;
+			SELECT U.IDUsuario, U.Nombre, U.Apellido1, U.Apellido2, U.CURP, 
+				N.Nac AS Nacionalidad, U.Sexo, U.FechaNac, C.Cond AS Condicion, 
+				U.Cel, U.Correo
+			FROM Usuario U
+			LEFT JOIN Nacionalidad N ON U.Nacionalidad = N.IDNacionalidad
+			LEFT JOIN Condicion C ON U.Condicion = C.IDCondicion
+			WHERE U.Correo = @Correo;
+		END
+		ELSE
+		BEGIN
+			SET @Success = 0;
+		END
+	END TRY
+	BEGIN CATCH
+		SET @Success = 0
+	END CATCH
+	RETURN @Success
+END;
+GO
+
 --procedure que genera la tabla con la cuenta de usuarios por país al que pertenecen
 CREATE OR ALTER PROCEDURE PROC_statsPaises
 AS
@@ -880,6 +946,46 @@ BEGIN
 END;
 GO
 
+--procedure para registrar asistencia
+CREATE OR ALTER PROCEDURE PROC_registrarAsistencia
+	@Fecha DATE,
+	@Donacion CHAR,
+	@IDUsuario INT,
+	@FolioComedor INT,
+	@Success AS BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY
+		INSERT INTO Asistencia(Fecha, Donacion, IDUsuario, FolioComedor)
+		VALUES (@Fecha, @Donacion, @IDUsuario, @FolioComedor)
+		SET @Success = 1;
+	END TRY
+	BEGIN CATCH
+		SET @Success = 0;
+	END CATCH
+	RETURN @Success;
+END;
+GO
+
+--procedure para sumar los asistentes en un comedor en un día
+CREATE OR ALTER PROCEDURE PROC_sumarAsistentes
+    @Fecha DATE,
+    @FolioComedor INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @TotalAsistentes INT;
+    SELECT @TotalAsistentes = COUNT(*) 
+    FROM Asistencia
+    WHERE Fecha = @Fecha AND FolioComedor = @FolioComedor;
+    SELECT @TotalAsistentes AS TotalAsistentesEnComedor;
+END;
+GO
+
+--procedure para sacar promedio de calificaciones semanal de un comedor
+--procedure para sumar las ganancias de un comedor en un día
+--procedure para sumar las ganancias de un comedor en un mes
+--procedure para generar una lista de ganancias semanales de los comedores
 
 USE ComedorBD
 GO
