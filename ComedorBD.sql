@@ -982,6 +982,14 @@ BEGIN
 END;
 GO
 
+--procedure que genera la lista de todos los comedores activos
+CREATE OR ALTER PROCEDURE PROC_listaComedores
+AS
+BEGIN
+	SELECT Nombre FROM Comedor WHERE Estado LIKE 200
+END;
+GO
+
 --procedure para sacar promedio de calificaciones semanal de un comedor
 --procedure para sumar las ganancias de un comedor en un día
 --procedure para sumar las ganancias de un comedor en un mes
