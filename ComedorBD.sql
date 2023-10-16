@@ -276,14 +276,11 @@ CREATE OR ALTER PROCEDURE PROC_altaUsuario
 AS
 BEGIN
 	BEGIN TRY
-		DECLARE @IDCondicion AS INT;
-		SELECT @IDCondicion = (SELECT IDCondicion FROM Condicion WHERE Cond LIKE @Condicion);
-
-		DECLARE @IDNacionalidad AS INT;
-		SELECT @IDNacionalidad = (SELECT IDNacionalidad FROM Nacionalidad WHERE Nac LIKE @Nacionalidad);
-
 		INSERT INTO Usuario(Nombre, Apellido1, Apellido2, CURP, Nacionalidad, Sexo, FechaNac, Condicion, Cel, Correo) 
-		VALUES (@Nombre, @Apellido1, @Apellido2, @CURP, @IDNacionalidad, @Sexo, @FechaNac, @IDCondicion, @Cel, @Correo);
+		SELECT @Nombre, @Apellido1, @Apellido2, @CURP, N.IDNacionalidad, @Sexo, @FechaNac, C.IDCondicion, @Cel, @Correo
+		FROM Nacionalidad N, Condicion C
+		WHERE N.Nac = @Nacionalidad AND C.Cond = @Condicion;
+
 		SET @Success = 1;
 	END TRY
 	BEGIN CATCH
@@ -292,6 +289,7 @@ BEGIN
 	RETURN @Success
 END;
 GO
+
 
 --procedure para insertar una calificación
 CREATE OR ALTER PROCEDURE PROC_calificar
@@ -988,13 +986,12 @@ CREATE OR ALTER PROCEDURE PROC_sumarAsistentes
 AS
 BEGIN
     SET NOCOUNT ON;
-    DECLARE @TotalAsistentes INT;
-    SELECT @TotalAsistentes = COUNT(*) 
+    SELECT COUNT(*) AS TotalAsistentesEnComedor
     FROM Asistencia
     WHERE Fecha = @Fecha AND FolioComedor = @FolioComedor;
-    SELECT @TotalAsistentes AS TotalAsistentesEnComedor;
 END;
 GO
+
 
 --procedure que genera la lista de todos los comedores activos
 CREATE OR ALTER PROCEDURE PROC_listaComedores
@@ -1059,36 +1056,17 @@ CREATE OR ALTER PROCEDURE PROC_listaGananciasPorComedor
 AS
 BEGIN
 	SET NOCOUNT ON;
-	CREATE TABLE #GananciasPorComedor(FolioComedor INT, Ganancia INT)
-	DECLARE @FolioComedor INT
-	DECLARE ComedorCursor CURSOR FOR
-	SELECT DISTINCT FolioComedor FROM Asistencia
-	OPEN ComedorCursor
-	FETCH NEXT FROM ComedorCursor INTO @FolioComedor
-	WHILE @@FETCH_STATUS = 0
-	BEGIN
-		DECLARE @Ganancia INT
-		SELECT @Ganancia = SUM(13)
-		FROM Asistencia
-		WHERE FolioComedor = @FolioComedor
-		AND Fecha BETWEEN @FechaInicio AND @FechaFin
-		AND Donacion = '0'
-		IF @Ganancia IS NOT NULL
-		BEGIN
-			INSERT INTO #GananciasPorComedor (FolioComedor, Ganancia)
-			VALUES (@FolioComedor, @Ganancia)
-		END
-		FETCH NEXT FROM ComedorCursor INTO @FolioComedor
-	END
-	CLOSE ComedorCursor
-	DEALLOCATE ComedorCursor
-	SELECT FolioComedor, SUM(Ganancia) AS GananciaTotal
-	FROM #GananciasPorComedor
+
+	SELECT FolioComedor, SUM(13) AS GananciaTotal
+	FROM Asistencia
+	WHERE Fecha BETWEEN @FechaInicio AND @FechaFin
+	      AND Donacion = '0'
 	GROUP BY FolioComedor
-	ORDER BY FolioComedor
-	DROP TABLE #GananciasPorComedor
+	HAVING SUM(13) IS NOT NULL
+	ORDER BY FolioComedor;
 END;
 GO
+
 
 
 USE ComedorBD
