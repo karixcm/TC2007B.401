@@ -26,6 +26,7 @@ DROP TABLE IF EXISTS Estado;
 DROP TABLE IF EXISTS Condicion;
 DROP TABLE IF EXISTS Nacionalidad;
 DROP TABLE IF EXISTS Calificaciones;
+DROP TABLE IF EXISTS Apertura;
 
 CREATE TABLE Administrador(
 	IDAdmin INT PRIMARY KEY IDENTITY(100,1),
@@ -58,6 +59,17 @@ CREATE TABLE Comedor(
 		REFERENCES Estado(IDEstado)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
+);
+
+CREATE TABLE Apertura(
+	FolioComedor INT NOT NULL
+		CONSTRAINT FK_Apertura_Comedor FOREIGN KEY (FolioComedor)
+		REFERENCES Comedor(FolioComedor)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION,
+	Fecha DATE NOT NULL,
+	HoraApertura TIME NOT NULL,
+	HoraCierre TIME
 );
 
 CREATE TABLE Condicion(
@@ -1070,6 +1082,45 @@ BEGIN
 END;
 GO
 
+--procedure para generar la hora de apertura
+CREATE OR ALTER PROCEDURE PROC_apertura
+	@FolioComedor INT,
+	@Fecha DATE,
+	@HoraApertura TIME,
+	@Success AS BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY
+		INSERT INTO Apertura(FolioComedor, Fecha, HoraApertura, HoraCierre)
+		VALUES (@FolioComedor, @Fecha, @HoraApertura, NULL);
+		SET @Success = 1;
+	END TRY
+	BEGIN CATCH
+		SET @Success = 0;
+	END CATCH
+END;
+GO
+
+--procedure para generar la hora de cierre
+CREATE OR ALTER PROCEDURE PROC_cierre
+	@FolioComedor INT,
+	@Fecha DATE,
+	@HoraCierre TIME,
+	@Success AS BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY
+		UPDATE Apertura
+		SET HoraCierre = @HoraCierre
+		WHERE FolioComedor = @FolioComedor AND Fecha = @Fecha;
+		SET @Success = 1;
+	END TRY
+	BEGIN CATCH
+		SET @Success = 0;
+	END CATCH
+END;
+GO
+
 
 
 USE ComedorBD
@@ -1239,4 +1290,20 @@ EXEC PROC_registrarAsistencia '2023-02-13','0','1010','5',@Success OUTPUT;
 EXEC PROC_registrarAsistencia '2023-08-03','1','1009','23',@Success OUTPUT;
 --EXEC PROC_registrarAsistencia '','','','',@Success OUTPUT;
 --SELECT @Success AS Success
+GO
+
+DECLARE @Success AS BIT
+EXEC PROC_apertura '1','2023-10-15','12:30:02',@Success OUTPUT;
+SELECT @Success AS Success
+GO
+
+SELECT* FROM Apertura
+GO
+
+DECLARE @Success AS BIT
+EXEC PROC_cierre '1','2023-10-15','16:02:15',@Success OUTPUT;
+SELECT @Success AS Success
+GO
+
+SELECT* FROM Apertura
 GO
