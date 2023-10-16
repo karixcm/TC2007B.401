@@ -1053,6 +1053,43 @@ GO
 
 
 --procedure para generar una lista de ganancias semanales de los comedores
+CREATE OR ALTER PROCEDURE PROC_listaGananciasPorComedor
+	@FechaInicio DATE,
+	@FechaFin DATE
+AS
+BEGIN
+	SET NOCOUNT ON;
+	CREATE TABLE #GananciasPorComedor(FolioComedor INT, Ganancia INT)
+	DECLARE @FolioComedor INT
+	DECLARE ComedorCursor CURSOR FOR
+	SELECT DISTINCT FolioComedor FROM Asistencia
+	OPEN ComedorCursor
+	FETCH NEXT FROM ComedorCursor INTO @FolioComedor
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		DECLARE @Ganancia INT
+		SELECT @Ganancia = SUM(13)
+		FROM Asistencia
+		WHERE FolioComedor = @FolioComedor
+		AND Fecha BETWEEN @FechaInicio AND @FechaFin
+		AND Donacion = '0'
+		IF @Ganancia IS NOT NULL
+		BEGIN
+			INSERT INTO #GananciasPorComedor (FolioComedor, Ganancia)
+			VALUES (@FolioComedor, @Ganancia)
+		END
+		FETCH NEXT FROM ComedorCursor INTO @FolioComedor
+	END
+	CLOSE ComedorCursor
+	DEALLOCATE ComedorCursor
+	SELECT FolioComedor, SUM(Ganancia) AS GananciaTotal
+	FROM #GananciasPorComedor
+	GROUP BY FolioComedor
+	ORDER BY FolioComedor
+	DROP TABLE #GananciasPorComedor
+END;
+GO
+
 
 USE ComedorBD
 GO
