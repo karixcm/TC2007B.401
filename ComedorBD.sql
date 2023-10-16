@@ -1052,7 +1052,6 @@ BEGIN
 END;
 GO
 
-
 --procedure para generar una lista de ganancias semanales de los comedores
 CREATE OR ALTER PROCEDURE PROC_listaGananciasPorComedor
 	@FechaInicio DATE,
