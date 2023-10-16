@@ -142,7 +142,8 @@ CREATE TABLE Calificaciones(
 	Fecha DATE NOT NULL,
 	CalLimpieza INT NOT NULL,
 	CalComida INT NOT NULL,
-	CalAtencion INT NOT NULL
+	CalAtencion INT NOT NULL,
+	Comentario VARCHAR(150) NOT NULL
 );
 
 USE ComedorBD;
@@ -300,13 +301,25 @@ CREATE OR ALTER PROCEDURE PROC_calificar
 	@CalLimpieza INT,
 	@CalComida INT,
 	@CalAtencion INT,
+	@Comentario VARCHAR(150),
 	@Success AS BIT OUTPUT
 AS
 BEGIN 
 	BEGIN TRY
-        INSERT INTO Calificaciones(IDUsuario, FolioComedor,Fecha, CalLimpieza, CalComida, CalAtencion)
-		VALUES (@IDUsuario, @FolioComedor,@Fecha, @CalLimpieza, @CalComida, @CalAtencion);
-        SET @Success = 1;
+		IF (@Comentario IS NULL)
+			BEGIN
+				DECLARE @ComentarioVacio AS VARCHAR(15)
+				SELECT @ComentarioVacio = 'Sin comentario'
+				INSERT INTO Calificaciones(IDUsuario, FolioComedor,Fecha, CalLimpieza, CalComida, CalAtencion, Comentario)
+				VALUES (@IDUsuario, @FolioComedor,@Fecha, @CalLimpieza, @CalComida, @CalAtencion, @ComentarioVacio);
+				SET @Success = 1;
+			END
+		ELSE
+			BEGIN
+				INSERT INTO Calificaciones(IDUsuario, FolioComedor,Fecha, CalLimpieza, CalComida, CalAtencion, Comentario)
+				VALUES (@IDUsuario, @FolioComedor,@Fecha, @CalLimpieza, @CalComida, @CalAtencion, @Comentario);
+				SET @Success = 1;
+			END
     END TRY
     BEGIN CATCH
         SET @Success = 0;
@@ -672,6 +685,7 @@ BEGIN
 END;
 GO
 
+--procedure que regresa una lista ordenada de mejor a peor calificados los comedores
 CREATE OR ALTER PROCEDURE PROC_ordenMejoresComedores
     @mes INT,
     @anio INT
@@ -1127,18 +1141,18 @@ EXEC PROC_altaComedor '42','Tierra de en Medio','Hacienda de la Flor #14 Col. Ti
 GO
 
 DECLARE @Success AS BIT
-EXEC PROC_calificar '1000','1','2022-10-12','4','5','3', @Success OUTPUT;
-EXEC PROC_calificar '1001','2','2022-10-12','5','2','1', @Success OUTPUT;
-EXEC PROC_calificar '1002','3','2022-10-12','5','5','4', @Success OUTPUT;
-EXEC PROC_calificar '1003','2','2022-10-12','4','4','3', @Success OUTPUT;
-EXEC PROC_calificar '1004','1','2022-10-12','3','5','3', @Success OUTPUT;
-EXEC PROC_calificar '1005','4','2022-10-12','3','4','4', @Success OUTPUT;
-EXEC PROC_calificar '1001','4','2022-10-12','2','4','2', @Success OUTPUT;
-EXEC PROC_calificar '1000','3','2022-10-12','2','5','2', @Success OUTPUT;
-EXEC PROC_calificar '1001','1','2022-10-12','4','5','3', @Success OUTPUT;
-EXEC PROC_calificar '1002','2','2022-10-12','1','2','5', @Success OUTPUT;
-EXEC PROC_calificar '1003','2','2022-10-12','5','4','1', @Success OUTPUT;
-EXEC PROC_calificar '1004','3','2022-10-12','4','3','3', @Success OUTPUT;
-EXEC PROC_calificar '1005','1','2022-10-12','3','3','2', @Success OUTPUT;
+EXEC PROC_calificar '1000','1','2022-10-12','4','5','3',null, @Success OUTPUT;
+EXEC PROC_calificar '1001','2','2022-10-12','5','2','1','Muy horrible comida', @Success OUTPUT;
+EXEC PROC_calificar '1002','3','2022-10-12','5','5','4','Excelente servicio', @Success OUTPUT;
+EXEC PROC_calificar '1003','2','2022-10-12','4','4','3','Muy limpio el lugar, me quedaron a deber con la atención', @Success OUTPUT;
+EXEC PROC_calificar '1004','1','2022-10-12','3','5','3','Estaba sucio, pero la comida estaba rica', @Success OUTPUT;
+EXEC PROC_calificar '1005','4','2022-10-12','3','4','4','Deben limpiar más seguido', @Success OUTPUT;
+EXEC PROC_calificar '1001','4','2022-10-12','2','4','2','Buena comida', @Success OUTPUT;
+EXEC PROC_calificar '1000','3','2022-10-12','2','5','2','Deliciosa comida, pero faltó atención', @Success OUTPUT;
+EXEC PROC_calificar '1001','1','2022-10-12','4','5','3',null, @Success OUTPUT;
+EXEC PROC_calificar '1002','2','2022-10-12','1','2','5','Pésimo, sucio muy sucio pero me dieron buena atención', @Success OUTPUT;
+EXEC PROC_calificar '1003','2','2022-10-12','5','4','1','Bonito lugar y rica comida, pero fue mala la atención', @Success OUTPUT;
+EXEC PROC_calificar '1004','3','2022-10-12','4','3','3','En general bien', @Success OUTPUT;
+EXEC PROC_calificar '1005','1','2022-10-12','3','3','2',null, @Success OUTPUT;
 --SELECT @Success AS Success
 GO
