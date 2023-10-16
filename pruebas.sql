@@ -28,7 +28,9 @@ GO
 --SELECT* FROM Condicion;
 --GO
 
---EXEC PROC_gananciasHoy '1', '2023-04-13';
+--DECLARE @TotalGanancias INT
+--EXEC PROC_gananciasHoy '1', '2023-04-13', @TotalGanancias OUTPUT;
+--SELECT @TotalGanancias AS TotalGananciasHoy
 --GO
 
 --EXEC PROC_gananciasFechas '1','2023-03-12','2023-04-13';
@@ -39,3 +41,6 @@ GO
 
 --EXEC PROC_sumarAsistentes '2023-04-13', '1';
 --GO
+
+--SELECT* FROM Usuario
+--SELECT* FROM Condicion
