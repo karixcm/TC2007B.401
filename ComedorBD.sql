@@ -103,7 +103,7 @@ CREATE TABLE Pariente(
 
 CREATE TABLE Asistencia(
 	Fecha DATE NOT NULL,
-	Donacion CHAR NOT NULL,
+	Donacion INT NOT NULL,
 	IDUsuario INT NOT NULL
 		CONSTRAINT FK_Asistencia_Usuario FOREIGN KEY (IDUsuario)
 		REFERENCES Usuario(IDUsuario)
@@ -1005,8 +1005,53 @@ END;
 GO
 
 --procedure para sacar promedio de calificaciones semanal de un comedor
+CREATE OR ALTER PROCEDURE PROC_promedioCalSemanal
+	@FolioComedor INT,
+	@FechaInicio DATE,
+	@FechaFin DATE
+AS
+BEGIN
+	SELECT
+		AVG(CalLimpieza) AS PromedioLimpieza,
+		AVG(CalComida) AS PromedioComida,
+		AVG(CalAtencion) AS PromedioAtencion
+	FROM Calificaciones
+	WHERE FolioComedor = @FolioComedor
+	AND Fecha BETWEEN @FechaInicio AND @FechaFin;
+END;
+GO
+
 --procedure para sumar las ganancias de un comedor en un día
+CREATE OR ALTER PROCEDURE PROC_gananciasHoy
+	@FolioComedor INT,
+	@Fecha DATE
+AS
+BEGIN
+	DECLARE @GananciaHoy AS INT
+	SELECT @GananciaHoy = COUNT(*) FROM Asistencia WHERE FolioComedor = @FolioComedor AND Fecha = @Fecha AND Donacion = '0';
+	DECLARE @Total AS INT;
+	SELECT @Total = (@GananciaHoy * 13);
+	PRINT @Total;
+END;
+GO
+
 --procedure para sumar las ganancias de un comedor en un mes
+CREATE OR ALTER PROCEDURE PROC_gananciasFechas
+	@FolioComedor INT,
+	@FechaInicio DATE,
+	@FechaFin DATE
+AS
+BEGIN
+	SET NOCOUNT ON;
+	DECLARE @TotalA AS INT
+	SELECT @TotalA = COUNT(*) FROM Asistencia WHERE FolioComedor = @FolioComedor AND Fecha BETWEEN @FechaInicio AND @FechaFin AND Donacion = '0';
+	DECLARE @TotalGanancias AS INT;
+	SELECT @TotalGanancias = (@TotalA * 13);
+	PRINT @TotalGanancias;
+END;
+GO
+
+
 --procedure para generar una lista de ganancias semanales de los comedores
 
 USE ComedorBD
@@ -1154,5 +1199,26 @@ EXEC PROC_calificar '1002','2','2022-10-12','1','2','5','Pésimo, sucio muy sucio
 EXEC PROC_calificar '1003','2','2022-10-12','5','4','1','Bonito lugar y rica comida, pero fue mala la atención', @Success OUTPUT;
 EXEC PROC_calificar '1004','3','2022-10-12','4','3','3','En general bien', @Success OUTPUT;
 EXEC PROC_calificar '1005','1','2022-10-12','3','3','2',null, @Success OUTPUT;
+--SELECT @Success AS Success
+GO
+
+DECLARE @Success AS BIT
+EXEC PROC_registrarAsistencia '2023-04-13','1','1003','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-04-13','0','1001','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-04-13','0','1002','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-04-13','0','1004','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-03-12','0','1001','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-01-03','1','1012','3',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-06-23','0','1010','5',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-12-24','1','1008','8',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-05-30','0','1007','42',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-06-14','1','1005','33',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-07-11','0','1003','12',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-01-13','0','1000','3',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-01-01','0','1004','4',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-01-01','0','1002','4',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-02-13','0','1010','5',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-08-03','1','1009','23',@Success OUTPUT;
+--EXEC PROC_registrarAsistencia '','','','',@Success OUTPUT;
 --SELECT @Success AS Success
 GO
