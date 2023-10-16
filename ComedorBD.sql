@@ -638,7 +638,7 @@ AS
 BEGIN
 	BEGIN TRY
 		DECLARE @StoredPassword VARCHAR(80);
-		SELECT @StoredPassword = (SELECT ContraComedor FROM Comedor WHERE FolioComedor = FolioComedor)
+		SELECT @StoredPassword = (SELECT ContraComedor FROM Comedor WHERE FolioComedor = @FolioComedor)
 
 		DECLARE @Salt AS VARCHAR(16);
 		SELECT @Salt = SUBSTRING(@StoredPassword, 1, 16);
@@ -1021,13 +1021,15 @@ GO
 --procedure para sumar las ganancias de un comedor en un día
 CREATE OR ALTER PROCEDURE PROC_gananciasHoy
 	@FolioComedor INT,
-	@Fecha DATE
+	@Fecha DATE,
+	@TotalGanancias INT OUTPUT
 AS
 BEGIN
 	DECLARE @GananciaHoy AS INT
 	SELECT @GananciaHoy = COUNT(*) FROM Asistencia WHERE FolioComedor = @FolioComedor AND Fecha = @Fecha AND Donacion = '0';
 	DECLARE @Total AS INT;
 	SELECT @Total = (@GananciaHoy * 13);
+	SET @TotalGanancias = @Total;
 	PRINT @Total;
 END;
 GO
@@ -1036,7 +1038,8 @@ GO
 CREATE OR ALTER PROCEDURE PROC_gananciasFechas
 	@FolioComedor INT,
 	@FechaInicio DATE,
-	@FechaFin DATE
+	@FechaFin DATE,
+	@TotalGananciasPeriodo INT OUTPUT
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -1044,6 +1047,7 @@ BEGIN
 	SELECT @TotalA = COUNT(*) FROM Asistencia WHERE FolioComedor = @FolioComedor AND Fecha BETWEEN @FechaInicio AND @FechaFin AND Donacion = '0';
 	DECLARE @TotalGanancias AS INT;
 	SELECT @TotalGanancias = (@TotalA * 13);
+	SET @TotalGananciasPeriodo = @TotalGanancias
 	PRINT @TotalGanancias;
 END;
 GO
