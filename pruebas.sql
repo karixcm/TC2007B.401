@@ -44,3 +44,15 @@ GO
 
 --SELECT* FROM Usuario
 --SELECT* FROM Condicion
+
+DECLARE @Success AS BIT
+--SELECT* FROM Administrador
+EXEC PROC_logInAdmin '100','angelito123', @Success OUTPUT;
+SELECT @Success AS Success
+GO
+
+DECLARE @Success AS BIT
+--SELECT* FROM Administrador
+EXEC PROC_logInComedor 'Com01','DIFATCOM01', @Success OUTPUT;
+SELECT @Success AS Success
+GO
