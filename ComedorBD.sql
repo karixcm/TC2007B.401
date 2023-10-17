@@ -312,8 +312,6 @@ BEGIN
 END;
 GO
 
-
-
 --procedure para insertar una calificación
 CREATE OR ALTER PROCEDURE PROC_calificar
 	@IDUsuario INT,
@@ -679,7 +677,7 @@ BEGIN
 			BEGIN
 				SET @Success = 0;
 			END
-		SELECT FolioComedor FROM Comedor WHERE Usuario LIKE @Usuario;
+		SELECT FolioComedor, Nombre FROM Comedor WHERE Usuario LIKE @Usuario;
 	END TRY
 	BEGIN CATCH
 		SET @Success = 0;
