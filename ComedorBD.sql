@@ -645,14 +645,14 @@ GO
 
 --procedure para verificar inicio de sesión del Comedor
 CREATE OR ALTER PROCEDURE PROC_logInComedor
-	@FolioComedor INT,
+	@Usuario VARCHAR(10),
 	@Contrasena VARCHAR(80),
 	@Success BIT OUTPUT
 AS
 BEGIN
 	BEGIN TRY
 		DECLARE @StoredPassword VARCHAR(80);
-		SELECT @StoredPassword = (SELECT ContraComedor FROM Comedor WHERE FolioComedor = @FolioComedor)
+		SELECT @StoredPassword = (SELECT ContraComedor FROM Comedor WHERE Usuario = @Usuario)
 
 		DECLARE @Salt AS VARCHAR(16);
 		SELECT @Salt = SUBSTRING(@StoredPassword, 1, 16);
@@ -1296,16 +1296,13 @@ GO
 
 DECLARE @Success AS BIT
 EXEC PROC_apertura '1','2023-10-15','12:30:02',@Success OUTPUT;
-SELECT @Success AS Success
+--SELECT @Success AS Success
 GO
 
-SELECT* FROM Apertura
+--SELECT* FROM Apertura
 GO
 
 DECLARE @Success AS BIT
 EXEC PROC_cierre '1','2023-10-15','16:02:15',@Success OUTPUT;
-SELECT @Success AS Success
-GO
-
-SELECT* FROM Apertura
+--SELECT @Success AS Success
 GO
