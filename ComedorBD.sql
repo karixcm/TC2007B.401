@@ -287,13 +287,23 @@ CREATE OR ALTER PROCEDURE PROC_altaUsuario
 	@Success AS BIT OUTPUT
 AS
 BEGIN
-	BEGIN TRY
-		INSERT INTO Usuario(Nombre, Apellido1, Apellido2, CURP, Nacionalidad, Sexo, FechaNac, Condicion, Cel, Correo) 
-		SELECT @Nombre, @Apellido1, @Apellido2, @CURP, N.IDNacionalidad, @Sexo, @FechaNac, C.IDCondicion, @Cel, @Correo
-		FROM Nacionalidad N, Condicion C
-		WHERE N.Nac = @Nacionalidad AND C.Cond = @Condicion;
+	DECLARE @NacionalidadID INT;
+	DECLARE @CondicionID INT;
 
-		SET @Success = 1;
+	BEGIN TRY
+		SELECT @NacionalidadID = IDNacionalidad FROM Nacionalidad WHERE Nac = @Nacionalidad;
+		SELECT @CondicionID = IDCondicion FROM Condicion WHERE Cond = @Condicion;
+		IF @NacionalidadID IS NULL OR @CondicionID IS NULL
+		BEGIN
+			SET @Success = 0;
+		END
+		ELSE
+		BEGIN
+			INSERT INTO Usuario(Nombre, Apellido1, Apellido2, CURP, Nacionalidad, Sexo, FechaNac, Condicion, Cel, Correo) 
+			VALUES (@Nombre, @Apellido1, @Apellido2, @CURP, @NacionalidadID, @Sexo, @FechaNac, @CondicionID, @Cel, @Correo);
+
+			SET @Success = 1;
+		END
 	END TRY
 	BEGIN CATCH
 		SET @Success = 0;
@@ -301,6 +311,7 @@ BEGIN
 	RETURN @Success
 END;
 GO
+
 
 
 --procedure para insertar una calificación
