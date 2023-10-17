@@ -306,7 +306,7 @@ GO
 --procedure para insertar una calificación
 CREATE OR ALTER PROCEDURE PROC_calificar
 	@IDUsuario INT,
-	@FolioComedor INT,
+	@NombreComedor VARCHAR(50),
 	@Fecha DATE,
 	@CalLimpieza INT,
 	@CalComida INT,
@@ -316,6 +316,8 @@ CREATE OR ALTER PROCEDURE PROC_calificar
 AS
 BEGIN 
 	BEGIN TRY
+		DECLARE @FolioComedor INT;
+		SELECT @FolioComedor = (SELECT FolioComedor FROM Comedor WHERE Nombre LIKE @NombreComedor);
 		IF (@Comentario IS NULL)
 			BEGIN
 				DECLARE @ComentarioVacio AS VARCHAR(15)
@@ -1255,19 +1257,19 @@ EXEC PROC_altaComedor '42','Tierra de en Medio','Hacienda de la Flor #14 Col. Ti
 GO
 
 DECLARE @Success AS BIT
-EXEC PROC_calificar '1000','1','2022-10-12','4','5','3',null, @Success OUTPUT;
-EXEC PROC_calificar '1001','2','2022-10-12','5','2','1','Muy horrible comida', @Success OUTPUT;
-EXEC PROC_calificar '1002','3','2022-10-12','5','5','4','Excelente servicio', @Success OUTPUT;
-EXEC PROC_calificar '1003','2','2022-10-12','4','4','3','Muy limpio el lugar, me quedaron a deber con la atención', @Success OUTPUT;
-EXEC PROC_calificar '1004','1','2022-10-12','3','5','3','Estaba sucio, pero la comida estaba rica', @Success OUTPUT;
-EXEC PROC_calificar '1005','4','2022-10-12','3','4','4','Deben limpiar más seguido', @Success OUTPUT;
-EXEC PROC_calificar '1001','4','2022-10-12','2','4','2','Buena comida', @Success OUTPUT;
-EXEC PROC_calificar '1000','3','2022-10-12','2','5','2','Deliciosa comida, pero faltó atención', @Success OUTPUT;
-EXEC PROC_calificar '1001','1','2022-10-12','4','5','3',null, @Success OUTPUT;
-EXEC PROC_calificar '1002','2','2022-10-12','1','2','5','Pésimo, sucio muy sucio pero me dieron buena atención', @Success OUTPUT;
-EXEC PROC_calificar '1003','2','2022-10-12','5','4','1','Bonito lugar y rica comida, pero fue mala la atención', @Success OUTPUT;
-EXEC PROC_calificar '1004','3','2022-10-12','4','3','3','En general bien', @Success OUTPUT;
-EXEC PROC_calificar '1005','1','2022-10-12','3','3','2',null, @Success OUTPUT;
+EXEC PROC_calificar '1000','Cinco de Mayo','2022-10-12','4','5','3',null, @Success OUTPUT;
+EXEC PROC_calificar '1001','México 86','2022-10-12','5','2','1','Muy horrible comida', @Success OUTPUT;
+EXEC PROC_calificar '1002','Cardenas del Rio','2022-10-12','5','5','4','Excelente servicio', @Success OUTPUT;
+EXEC PROC_calificar '1003','México 86','2022-10-12','4','4','3','Muy limpio el lugar, me quedaron a deber con la atención', @Success OUTPUT;
+EXEC PROC_calificar '1004','Cinco de Mayo','2022-10-12','3','5','3','Estaba sucio, pero la comida estaba rica', @Success OUTPUT;
+EXEC PROC_calificar '1005','Monte María','2022-10-12','3','4','4','Deben limpiar más seguido', @Success OUTPUT;
+EXEC PROC_calificar '1001','Monte María','2022-10-12','2','4','2','Buena comida', @Success OUTPUT;
+EXEC PROC_calificar '1000','Cardenas del Rio','2022-10-12','2','5','2','Deliciosa comida, pero faltó atención', @Success OUTPUT;
+EXEC PROC_calificar '1001','Cinco de Mayo','2022-10-12','4','5','3',null, @Success OUTPUT;
+EXEC PROC_calificar '1002','México 86','2022-10-12','1','2','5','Pésimo, sucio muy sucio pero me dieron buena atención', @Success OUTPUT;
+EXEC PROC_calificar '1003','México 86','2022-10-12','5','4','1','Bonito lugar y rica comida, pero fue mala la atención', @Success OUTPUT;
+EXEC PROC_calificar '1004','Cardenas del Rio','2022-10-12','4','3','3','En general bien', @Success OUTPUT;
+EXEC PROC_calificar '1005','Cinco de Mayo','2022-10-12','3','3','2',null, @Success OUTPUT;
 --SELECT @Success AS Success
 GO
 
