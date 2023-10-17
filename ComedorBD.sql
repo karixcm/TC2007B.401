@@ -668,6 +668,7 @@ BEGIN
 			BEGIN
 				SET @Success = 0;
 			END
+		SELECT FolioComedor FROM Comedor WHERE Usuario LIKE @Usuario;
 	END TRY
 	BEGIN CATCH
 		SET @Success = 0;
