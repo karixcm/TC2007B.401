@@ -45,14 +45,26 @@ GO
 --SELECT* FROM Usuario
 --SELECT* FROM Condicion
 
-DECLARE @Success AS BIT
+--DECLARE @Success AS BIT
 --SELECT* FROM Administrador
-EXEC PROC_logInAdmin '100','angelito123', @Success OUTPUT;
-SELECT @Success AS Success
-GO
+--EXEC PROC_logInAdmin '100','angelito123', @Success OUTPUT;
+--SELECT @Success AS Success
+--GO
 
-DECLARE @Success AS BIT
+--DECLARE @Success AS BIT
 --SELECT* FROM Administrador
-EXEC PROC_logInComedor 'Com01','DIFATCOM01', @Success OUTPUT;
-SELECT @Success AS Success
-GO
+--EXEC PROC_logInComedor 'Com01','DIFATCOM01', @Success OUTPUT;
+--SELECT @Success AS Success
+--GO
+
+--DECLARE @Success AS BIT
+--EXEC PROC_altaUsuario 'Jimena','Campos','Escamilla','JCE234JDH6789GK594','México','F','2001-04-14','No aplica','5577889876','jim2t@tec.mx',@Success OUTPUT;
+--SELECT @Success AS Success
+--SELECT * FROM Usuario
+--GO
+
+--DECLARE @Success AS BIT
+--EXEC PROC_altaUsuario 'Aldo','Gonzales','Espinoza','ALGOE6758JHGF89TR6','Mexico','N','2001-05-16','No aplica','5573389876','aldogon@tec.mx',@Success OUTPUT;
+--SELECT @Success AS Success
+--SELECT * FROM Usuario
+--GO
