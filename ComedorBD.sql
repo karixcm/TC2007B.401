@@ -172,6 +172,11 @@ CREATE TABLE Urgencia(
 );
 
 CREATE TABLE Reportes(
+	FolioComedor INT NOT NULL
+		CONSTRAINT FK_Reportes_Comedor FOREIGN KEY (FolioComedor)
+		REFERENCES Comedor(FolioComedor)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION,
 	FolioReporte INT PRIMARY KEY IDENTITY(100000, 1),
 	Tipo INT NOT NULL
 		CONSTRAINT FK_Reportes_TipoReporte FOREIGN KEY (Tipo)
