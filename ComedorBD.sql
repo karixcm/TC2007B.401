@@ -324,6 +324,9 @@ AS
 BEGIN
     DECLARE @NacionalidadID INT;
     DECLARE @CondicionID INT;
+    
+    -- Variable para almacenar el nuevo ID
+    DECLARE @IDNuevo INT;
 
     BEGIN TRY
         SELECT @NacionalidadID = IDNacionalidad FROM Nacionalidad WHERE Nac = @Nacionalidad;
@@ -337,18 +340,24 @@ BEGIN
             INSERT INTO Usuario(Nombre, Apellido1, Apellido2, CURP, Nacionalidad, Sexo, FechaNac, Condicion, Cel, Correo) 
             VALUES (@Nombre, @Apellido1, @Apellido2, @CURP, @NacionalidadID, @Sexo, @FechaNac, @CondicionID, @Cel, @Correo);
 
-            SET @NuevoIDUsuario = SCOPE_IDENTITY();  -- Obtenemos el nuevo ID
+            -- Obtenemos el nuevo ID
+            SET @IDNuevo = SCOPE_IDENTITY();
             SET @Success = 1;
+
+            -- Devolver el nuevo ID como una tabla
+            SELECT @IDNuevo AS IDUsuario;
         END
     END TRY
     BEGIN CATCH
         SET @Success = 0;
     END CATCH
-	RETURN @Success;
-	RETURN @NuevoIDUsuario;
+
+    -- No es necesario devolver el nuevo ID aquí, ya se devuelve dentro del procedimiento
+    -- SET @NuevoIDUsuario = @IDNuevo;
+    
+    RETURN @Success;
 END;
 GO
-
 
 --procedure para insertar una calificación
 CREATE OR ALTER PROCEDURE PROC_calificar
@@ -1357,7 +1366,7 @@ INSERT INTO TipoReporte(Nombre) VALUES ('Otro');
 GO
 
 INSERT INTO Urgencia(Nombre) VALUES ('Inmediato');
-INSERT INTO Urgencia(Nombre) VALUES ('Menos de 30');
+INSERT INTO Urgencia(Nombre) VALUES ('Menos de 30 minutos');
 INSERT INTO Urgencia(Nombre) VALUES ('Menos de 2 horas');
 INSERT INTO Urgencia(Nombre) VALUES ('Antes de 24 horas');
 INSERT INTO Urgencia(Nombre) VALUES ('Antes de 72 horas');
@@ -1391,7 +1400,7 @@ EXEC PROC_altaUsuario 'Lauren','Soria','Castro','HIJDJSNE38475HFJt9','Republica 
 EXEC PROC_altaUsuario 'Santiago','Mondragon','Sanchez','SANTHI672347FH28EK','El Salvador','M','1960-10-19','Persona indígena','5647890217','santimnd@yahoo.com',@NuevoIDUsuario OUTPUT, @Success OUTPUT;
 EXEC PROC_altaUsuario 'Carla','Jimena','Ximena','CAJIXI345627DIKJ17','Guatemala','F','1978-06-02','Migrante o desplazado por conflictos','5512329345','carlajmxim@gmail.com',@NuevoIDUsuario OUTPUT, @Success OUTPUT;
 --SELECT @NuevoIDUsuario AS IDUsuario
---SELECT @Success AS Success
+SELECT @Success AS Success
 --SELECT* FROM Usuario
 GO
 
@@ -1753,6 +1762,6 @@ EXEC PROC_agregarInventario '2023-10-28','Champiñones','3','Latas','1',@Success 
 EXEC PROC_agregarInventario '2023-10-29','Avena','500','gramos','1',@Success OUTPUT;
 EXEC PROC_agregarInventario '2023-11-02','Sandía','1','Pieza','1',@Success OUTPUT;
 EXEC PROC_agregarInventario '2023-11-05','Huevo','18','Pieza','2',@Success OUTPUT;
-SELECT @Success AS Success
-EXEC PROC_inventarioCom '2';
+--SELECT @Success AS Success
+--EXEC PROC_inventarioCom '2';
 GO
