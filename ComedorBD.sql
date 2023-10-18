@@ -306,45 +306,49 @@ BEGIN
 END;
 GO
 
---procedure para alta de un usuario
+-- Procedure para alta de un usuario
 CREATE OR ALTER PROCEDURE PROC_altaUsuario
-	@Nombre VARCHAR(50),
-	@Apellido1 VARCHAR(50),
-	@Apellido2 VARCHAR(50),
-	@CURP CHAR(18),
-	@Nacionalidad VARCHAR(30),
-	@Sexo CHAR,
-	@FechaNac DATE,
-	@Condicion VARCHAR(50),
-	@Cel VARCHAR(15),
-	@Correo VARCHAR(30),
-	@Success AS BIT OUTPUT
+    @Nombre VARCHAR(50),
+    @Apellido1 VARCHAR(50),
+    @Apellido2 VARCHAR(50),
+    @CURP CHAR(18),
+    @Nacionalidad VARCHAR(30),
+    @Sexo CHAR,
+    @FechaNac DATE,
+    @Condicion VARCHAR(50),
+    @Cel VARCHAR(15),
+    @Correo VARCHAR(30),
+    @NuevoIDUsuario INT OUTPUT,  -- Agregamos un parámetro de salida para el nuevo ID
+    @Success BIT OUTPUT
 AS
 BEGIN
-	DECLARE @NacionalidadID INT;
-	DECLARE @CondicionID INT;
+    DECLARE @NacionalidadID INT;
+    DECLARE @CondicionID INT;
 
-	BEGIN TRY
-		SELECT @NacionalidadID = IDNacionalidad FROM Nacionalidad WHERE Nac = @Nacionalidad;
-		SELECT @CondicionID = IDCondicion FROM Condicion WHERE Cond = @Condicion;
-		IF @NacionalidadID IS NULL OR @CondicionID IS NULL
-		BEGIN
-			SET @Success = 0;
-		END
-		ELSE
-		BEGIN
-			INSERT INTO Usuario(Nombre, Apellido1, Apellido2, CURP, Nacionalidad, Sexo, FechaNac, Condicion, Cel, Correo) 
-			VALUES (@Nombre, @Apellido1, @Apellido2, @CURP, @NacionalidadID, @Sexo, @FechaNac, @CondicionID, @Cel, @Correo);
+    BEGIN TRY
+        SELECT @NacionalidadID = IDNacionalidad FROM Nacionalidad WHERE Nac = @Nacionalidad;
+        SELECT @CondicionID = IDCondicion FROM Condicion WHERE Cond = @Condicion;
+        IF @NacionalidadID IS NULL OR @CondicionID IS NULL
+        BEGIN
+            SET @Success = 0;
+        END
+        ELSE
+        BEGIN
+            INSERT INTO Usuario(Nombre, Apellido1, Apellido2, CURP, Nacionalidad, Sexo, FechaNac, Condicion, Cel, Correo) 
+            VALUES (@Nombre, @Apellido1, @Apellido2, @CURP, @NacionalidadID, @Sexo, @FechaNac, @CondicionID, @Cel, @Correo);
 
-			SET @Success = 1;
-		END
-	END TRY
-	BEGIN CATCH
-		SET @Success = 0;
-	END CATCH
-	RETURN @Success
+            SET @NuevoIDUsuario = SCOPE_IDENTITY();  -- Obtenemos el nuevo ID
+            SET @Success = 1;
+        END
+    END TRY
+    BEGIN CATCH
+        SET @Success = 0;
+    END CATCH
+	RETURN @Success;
+	RETURN @NuevoIDUsuario;
 END;
 GO
+
 
 --procedure para insertar una calificación
 CREATE OR ALTER PROCEDURE PROC_calificar
@@ -1361,31 +1365,32 @@ INSERT INTO Urgencia(Nombre) VALUES ('Sin rango asignado');
 GO
 
 --SELECT* FROM Usuario
+DECLARE @NuevoIDUsuario INT
 DECLARE @Success AS BIT
-EXEC PROC_altaUsuario 'Karla','Cruz','Muñiz','CUMK030414MDFRXRA9','México','F','1990-04-14','No aplica','5567866976','karla.cruzmz@gmail.com', @Success OUTPUT;
-EXEC PROC_altaUsuario 'Leonel','Cruz','Alcántara','CUAL021125HVERXRA9','Guatemala','F','1982-11-25','No aplica','5532544142','leonelcalc@gmail.com', @Success OUTPUT;
-EXEC PROC_altaUsuario 'Erik','Soto','Cano','CUDKE85H4NME96HJF9', 'Argentina','F','1991-04-25','Persona perteneciente al colectivo LGBTQ+','5567890987','erik@mail.com', @Success OUTPUT;
-EXEC PROC_altaUsuario 'Brisa','Estrada','Ortiz','EAOBRUEIT854HFMD38','El Salvador','F','1975-05-28','Mujer embarazada','5589723423','brisa@mail.com', @Success OUTPUT;
-EXEC PROC_altaUsuario 'Juan','Carlo','Carro','JCS234HDGS6789JDH7','Argentina','F','1980-06-12','Persona en condición de calle','5567890987','juanca@gmail.com',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Pepe','Luis','Moreno','HSJDKSEWUTYFHD7856','Cuba','M','1960-07-12','No aplica','5585463275','pepeca@gmail.com',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Patricio','Gonzales','Romo','M6GDSTEXUASYWE7856','México','F','1950-07-13','Persona en condición de calle','5657863426','pattgonro@gmail.com',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Lorena','Delgado','Mendonza','LDMREHDUS85746FHC7','Guatemala','F','1982-08-10','Trabajador/a informal','5576859403','lorenitadm1404@hotmail.com',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Lauren','Soria','Castro','HIJDJSNE38475HFJD9','Republica Dominicana','F','2001-03-14','Menor de edad','5674839203','lauso@mail.mx',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Santiago','Mondragon','Sanchez','SANTHI67DH47FH28EK','El Salvador','M','2001-10-19','Persona indígena','5647890987','santimond@yahoo.com',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Carla','Jimena','Ximena','CAJIXI345627DIKJ87','Guatemala','F','1998-06-02','Migrante o desplazado por conflictos','5512312345','carlajimxim@gmail.com',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Estefania','Luz','Miranda','KSJDHFY78473JFUR89','Bolivia','F','1968-09-08','Otra condición','5584569867','estf@gmail.com',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Karla','Cruz','Muñiz','CUMK030124MDFRXRA9','México','F','1953-04-14','No aplica','55678669743','karla.cruzm@gmail.com', @Success OUTPUT;
-EXEC PROC_altaUsuario 'Leonel','Cruz','Alcántara','CUAL012125HVERXRA9','Guatemala','M','1945-11-25','No aplica','5232544142','leoelcalc@gmail.com', @Success OUTPUT;
-EXEC PROC_altaUsuario 'Erik','Soto','Cano','CUDKE85H4NME34HJF9', 'México','M','1997-04-25','Persona perteneciente al colectivo LGBTQ+','5567330987','eri@mail.com', @Success OUTPUT;
-EXEC PROC_altaUsuario 'Brisa','Estrada','Ortiz','EAOBRUEIT654HFMD38','El Salvador','F','1982-05-28','Mujer embarazada','558972223','bris@mail.com', @Success OUTPUT;
-EXEC PROC_altaUsuario 'Juan','Carlo','Carro','JCS234HDGS6723JDH7','Nicaragua','M','1965-06-12','Persona en condición de calle','5167890987','juanc@gmail.com',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Pepe','Luis','Moreno','HSJDKSEWUTYFHD1256','México','M','1970-07-12','No aplica','5585343275','pepec@gmail.com',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Patricio','Gonzales','Romo','M6GDSTEXUASYWE3356','Brasil','M','1983-07-13','Persona en condición de calle','5655663426','pattgonr@gmail.com',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Lorena','Delgado','Mendonza','LDMREHDUS85446FHC7','Guatemala','F','1990-08-10','Trabajador/a informal','5576859783','lorenitad1404@hotmail.com',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Lauren','Soria','Castro','HIJDJSNE38475HFJt9','Republica Dominicana','F','1993-03-14','Menor de edad','5674839234','laus@mail.mx',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Santiago','Mondragon','Sanchez','SANTHI672347FH28EK','El Salvador','M','1960-10-19','Persona indígena','5647890217','santimnd@yahoo.com',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Carla','Jimena','Ximena','CAJIXI345627DIKJ17','Guatemala','F','1978-06-02','Migrante o desplazado por conflictos','5512329345','carlajmxim@gmail.com',@Success OUTPUT;
---EXEC PROC_altaUsuario 'Estefania','Luz','Miranda','KSJDHFY56473JSDR89','Perú','F','1999-09-08','Otra condición','5587569833','este@gmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Karla','Cruz','Muñiz','CUMK030414MDFRXRA9','México','F','1990-04-14','No aplica','5567866976','karla.cruzmz@gmail.com', @NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Leonel','Cruz','Alcántara','CUAL021125HVERXRA9','Guatemala','F','1982-11-25','No aplica','5532544142','leonelcalc@gmail.com', @NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Erik','Soto','Cano','CUDKE85H4NME96HJF9', 'Argentina','F','1991-04-25','Persona perteneciente al colectivo LGBTQ+','5567890987','erik@mail.com', @NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Brisa','Estrada','Ortiz','EAOBRUEIT854HFMD38','El Salvador','F','1975-05-28','Mujer embarazada','5589723423','brisa@mail.com', @NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Juan','Carlo','Carro','JCS234HDGS6789JDH7','Argentina','F','1980-06-12','Persona en condición de calle','5567890987','juanca@gmail.com',@NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Pepe','Luis','Moreno','HSJDKSEWUTYFHD7856','Cuba','M','1960-07-12','No aplica','5585463275','pepeca@gmail.com',@NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Patricio','Gonzales','Romo','M6GDSTEXUASYWE7856','México','F','1950-07-13','Persona en condición de calle','5657863426','pattgonro@gmail.com',@NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Lorena','Delgado','Mendonza','LDMREHDUS85746FHC7','Guatemala','F','1982-08-10','Trabajador/a informal','5576859403','lorenitadm1404@hotmail.com',@NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Lauren','Soria','Castro','HIJDJSNE38475HFJD9','Republica Dominicana','F','2001-03-14','Menor de edad','5674839203','lauso@mail.mx',@NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Santiago','Mondragon','Sanchez','SANTHI67DH47FH28EK','El Salvador','M','2001-10-19','Persona indígena','5647890987','santimond@yahoo.com',@NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Carla','Jimena','Ximena','CAJIXI345627DIKJ87','Guatemala','F','1998-06-02','Migrante o desplazado por conflictos','5512312345','carlajimxim@gmail.com',@NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Estefania','Luz','Miranda','KSJDHFY78473JFUR89','Bolivia','F','1968-09-08','Otra condición','5584569867','estf@gmail.com',@NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Karla','Cruz','Muñiz','CUMK030124MDFRXRA9','México','F','1953-04-14','No aplica','55678669743','karla.cruzm@gmail.com', @NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Leonel','Cruz','Alcántara','CUAL012125HVERXRA9','Guatemala','M','1945-11-25','No aplica','5232544142','leoelcalc@gmail.com', @NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Erik','Soto','Cano','CUDKE85H4NME34HJF9', 'México','M','1997-04-25','Persona perteneciente al colectivo LGBTQ+','5567330987','eri@mail.com', @NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Brisa','Estrada','Ortiz','EAOBRUEIT654HFMD38','El Salvador','F','1982-05-28','Mujer embarazada','558972223','bris@mail.com', @NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Juan','Carlo','Carro','JCS234HDGS6723JDH7','Nicaragua','M','1965-06-12','Persona en condición de calle','5167890987','juanc@gmail.com',@NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Pepe','Luis','Moreno','HSJDKSEWUTYFHD1256','México','M','1970-07-12','No aplica','5585343275','pepec@gmail.com',@NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Patricio','Gonzales','Romo','M6GDSTEXUASYWE3356','Brasil','M','1983-07-13','Persona en condición de calle','5655663426','pattgonr@gmail.com',@NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Lorena','Delgado','Mendonza','LDMREHDUS85446FHC7','Guatemala','F','1990-08-10','Trabajador/a informal','5576859783','lorenitad1404@hotmail.com',@NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Lauren','Soria','Castro','HIJDJSNE38475HFJt9','Republica Dominicana','F','1993-03-14','Menor de edad','5674839234','laus@mail.mx',@NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Santiago','Mondragon','Sanchez','SANTHI672347FH28EK','El Salvador','M','1960-10-19','Persona indígena','5647890217','santimnd@yahoo.com',@NuevoIDUsuario OUTPUT, @Success OUTPUT;
+EXEC PROC_altaUsuario 'Carla','Jimena','Ximena','CAJIXI345627DIKJ17','Guatemala','F','1978-06-02','Migrante o desplazado por conflictos','5512329345','carlajmxim@gmail.com',@NuevoIDUsuario OUTPUT, @Success OUTPUT;
+--SELECT @NuevoIDUsuario AS IDUsuario
 --SELECT @Success AS Success
 --SELECT* FROM Usuario
 GO
@@ -1749,5 +1754,5 @@ EXEC PROC_agregarInventario '2023-10-29','Avena','500','gramos','1',@Success OUT
 EXEC PROC_agregarInventario '2023-11-02','Sandía','1','Pieza','1',@Success OUTPUT;
 EXEC PROC_agregarInventario '2023-11-05','Huevo','18','Pieza','2',@Success OUTPUT;
 SELECT @Success AS Success
-EXEC PROC_inventarioCom '1';
+EXEC PROC_inventarioCom '2';
 GO
