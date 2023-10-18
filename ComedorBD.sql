@@ -1269,6 +1269,31 @@ BEGIN
 END;
 GO
 
+
+CREATE OR ALTER PROCEDURE PROC_obtenerIDcCURP
+	@CURP CHAR(18)
+AS
+BEGIN
+	SELECT IDUsuario FROM Usuario WHERE CURP LIKE @CURP;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE PROC_obtenerIDcCel
+	@Cel VARCHAR(15)
+AS
+BEGIN
+	SELECT IDUsuario FROM Usuario WHERE Cel LIKE @Cel;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE PROC_obtenerIDcCorreo
+	@Correo VARCHAR(30)
+AS
+BEGIN
+	SELECT IDUsuario FROM Usuario WHERE Correo LIKE @Correo;
+END;
+GO
+
 USE ComedorBD
 GO
 
@@ -1329,16 +1354,28 @@ GO
 DECLARE @Success AS BIT
 EXEC PROC_altaUsuario 'Karla','Cruz','Muñiz','CUMK030414MDFRXRA9','México','F','2003-04-14','No aplica','5567866976','karla.cruzmz@gmail.com', @Success OUTPUT;
 EXEC PROC_altaUsuario 'Leonel','Cruz','Alcántara','CUAL021125HVERXRA9','Guatemala','M','2002-11-25','No aplica','5532544142','leonelcalc@gmail.com', @Success OUTPUT;
-EXEC PROC_altaUsuario 'Erik','Soto','Cano','CUDKE85H4NME96HJF9', 'México','M','2003-04-25','Persona perteneciente al colectivo LGBTQ+','5567890987','erik@mail.com', @Success OUTPUT;
+EXEC PROC_altaUsuario 'Erik','Soto','Cano','CUDKE85H4NME96HJF9', 'Argentina','M','2003-04-25','Persona perteneciente al colectivo LGBTQ+','5567890987','erik@mail.com', @Success OUTPUT;
 EXEC PROC_altaUsuario 'Brisa','Estrada','Ortiz','EAOBRUEIT854HFMD38','El Salvador','F','2003-05-28','Mujer embarazada','5589723423','brisa@mail.com', @Success OUTPUT;
-EXEC PROC_altaUsuario 'Juan','Carlo','Carro','JCS234HDGS6789JDH7','México','M','2002-06-12','Persona en condición de calle','5567890987','juanca@gmail.com',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Pepe','Luis','Moreno','HSJDKSEWUTYFHD7856','México','M','2002-07-12','No aplica','5585463275','pepeca@gmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Juan','Carlo','Carro','JCS234HDGS6789JDH7','Argentina','M','2002-06-12','Persona en condición de calle','5567890987','juanca@gmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Pepe','Luis','Moreno','HSJDKSEWUTYFHD7856','Cuba','M','2002-07-12','No aplica','5585463275','pepeca@gmail.com',@Success OUTPUT;
 EXEC PROC_altaUsuario 'Patricio','Gonzales','Romo','M6GDSTEXUASYWE7856','México','M','2002-07-13','Persona en condición de calle','5657863426','pattgonro@gmail.com',@Success OUTPUT;
 EXEC PROC_altaUsuario 'Lorena','Delgado','Mendonza','LDMREHDUS85746FHC7','Guatemala','F','2003-08-10','Trabajador/a informal','5576859403','lorenitadm1404@hotmail.com',@Success OUTPUT;
 EXEC PROC_altaUsuario 'Lauren','Soria','Castro','HIJDJSNE38475HFJD9','Republica Dominicana','F','2001-03-14','Menor de edad','5674839203','lauso@mail.mx',@Success OUTPUT;
 EXEC PROC_altaUsuario 'Santiago','Mondragon','Sanchez','SANTHI67DH47FH28EK','El Salvador','M','2001-10-19','Persona indígena','5647890987','santimond@yahoo.com',@Success OUTPUT;
 EXEC PROC_altaUsuario 'Carla','Jimena','Ximena','CAJIXI345627DIKJ87','Guatemala','F','2000-06-02','Migrante o desplazado por conflictos','5512312345','carlajimxim@gmail.com',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Estefania','Luz','Miranda','KSJDHFY56473JFUR89','México','F','1999-09-08','Otra condición','5587569867','estef@gmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Estefania','Luz','Miranda','KSJDHFY78473JFUR89','Bolivia','F','1999-09-08','Otra condición','5584569867','estf@gmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Karla','Cruz','Muñiz','CUMK030124MDFRXRA9','México','F','2003-04-14','No aplica','55678669743','karla.cruzm@gmail.com', @Success OUTPUT;
+EXEC PROC_altaUsuario 'Leonel','Cruz','Alcántara','CUAL012125HVERXRA9','Guatemala','M','2002-11-25','No aplica','5232544142','leoelcalc@gmail.com', @Success OUTPUT;
+EXEC PROC_altaUsuario 'Erik','Soto','Cano','CUDKE85H4NME34HJF9', 'México','M','2003-04-25','Persona perteneciente al colectivo LGBTQ+','5567330987','eri@mail.com', @Success OUTPUT;
+EXEC PROC_altaUsuario 'Brisa','Estrada','Ortiz','EAOBRUEIT654HFMD38','El Salvador','F','2003-05-28','Mujer embarazada','558972223','bris@mail.com', @Success OUTPUT;
+EXEC PROC_altaUsuario 'Juan','Carlo','Carro','JCS234HDGS6723JDH7','Nicaragua','M','2002-06-12','Persona en condición de calle','5167890987','juanc@gmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Pepe','Luis','Moreno','HSJDKSEWUTYFHD1256','México','M','2002-07-12','No aplica','5585343275','pepec@gmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Patricio','Gonzales','Romo','M6GDSTEXUASYWE3356','Brasil','M','2002-07-13','Persona en condición de calle','5655663426','pattgonr@gmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Lorena','Delgado','Mendonza','LDMREHDUS85446FHC7','Guatemala','F','2003-08-10','Trabajador/a informal','5576859783','lorenitad1404@hotmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Lauren','Soria','Castro','HIJDJSNE38475HFJt9','Republica Dominicana','F','2001-03-14','Menor de edad','5674839234','laus@mail.mx',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Santiago','Mondragon','Sanchez','SANTHI672347FH28EK','El Salvador','M','2001-10-19','Persona indígena','5647890217','santimnd@yahoo.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Carla','Jimena','Ximena','CAJIXI345627DIKJ17','Guatemala','F','2000-06-02','Migrante o desplazado por conflictos','5512329345','carlajmxim@gmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Estefania','Luz','Miranda','KSJDHFY56473JSDR89','Perú','F','1999-09-08','Otra condición','5587569833','este@gmail.com',@Success OUTPUT;
 --SELECT @Success AS Success
 --SELECT* FROM Usuario
 GO
@@ -1417,22 +1454,148 @@ GO
 
 DECLARE @Success AS BIT
 EXEC PROC_calificar '1000','Cinco de Mayo','2023-10-12','4','5','3',null, @Success OUTPUT;
-EXEC PROC_calificar '1001','México 86','2023-10-12','5','2','1','Muy horrible comida', @Success OUTPUT;
+EXEC PROC_calificar '1001','Amp Peñitas','2023-10-12','5','2','1','Muy horrible comida', @Success OUTPUT;
 EXEC PROC_calificar '1002','Cardenas del Rio','2023-10-12','5','5','4','Excelente servicio', @Success OUTPUT;
 EXEC PROC_calificar '1003','México 86','2023-10-12','4','4','3','Muy limpio el lugar, me quedaron a deber con la atención', @Success OUTPUT;
-EXEC PROC_calificar '1004','Cinco de Mayo','2023-10-12','3','5','3','Estaba sucio, pero la comida estaba rica', @Success OUTPUT;
+EXEC PROC_calificar '1004','Amp Peñitas','2023-10-12','3','5','3','Estaba sucio, pero la comida estaba rica', @Success OUTPUT;
 EXEC PROC_calificar '1005','Monte María','2023-10-12','3','4','4','Deben limpiar más seguido', @Success OUTPUT;
-EXEC PROC_calificar '1001','Monte María','2023-10-12','2','4','2','Buena comida', @Success OUTPUT;
+EXEC PROC_calificar '1003','Monte María','2023-10-12','2','4','2','Buena comida', @Success OUTPUT;
 EXEC PROC_calificar '1000','Cardenas del Rio','2023-10-12','2','5','2','Deliciosa comida, pero faltó atención', @Success OUTPUT;
 EXEC PROC_calificar '1001','Cinco de Mayo','2023-10-12','4','5','3',null, @Success OUTPUT;
 EXEC PROC_calificar '1002','México 86','2023-10-12','1','2','5','Pésimo, sucio muy sucio pero me dieron buena atención', @Success OUTPUT;
 EXEC PROC_calificar '1003','México 86','2023-10-12','5','4','1','Bonito lugar y rica comida, pero fue mala la atención', @Success OUTPUT;
 EXEC PROC_calificar '1004','Cardenas del Rio','2023-10-12','4','3','3','En general bien', @Success OUTPUT;
-EXEC PROC_calificar '1005','Cinco de Mayo','2023-10-12','3','3','2',null, @Success OUTPUT;
-EXEC PROC_calificar '1000','Cinco de Mayo','2023-10-10','5','4','4','Muy buen servicio',@Success OUTPUT;
-EXEC PROC_calificar '1001','Cinco de Mayo','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1005','Margarita Maza','2023-10-12','3','3','2',null, @Success OUTPUT;
+EXEC PROC_calificar '1000','Margarita Maza','2023-10-10','5','4','4','Muy buen servicio',@Success OUTPUT;
+EXEC PROC_calificar '1001','Cerro Grande','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
 EXEC PROC_calificar '1002','Cinco de Mayo','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
-EXEC PROC_calificar '1003','Cinco de Mayo','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1003','Cerro Grande','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1000','Cerro Grande','2023-10-12','4','5','3',null, @Success OUTPUT;
+EXEC PROC_calificar '1001','México 86','2023-10-12','5','2','1','Muy horrible comida', @Success OUTPUT;
+EXEC PROC_calificar '1002','Cardenas del Rio','2023-10-12','5','5','4','Excelente servicio', @Success OUTPUT;
+EXEC PROC_calificar '1003','México 86','2023-10-12','4','4','3','Muy limpio el lugar, me quedaron a deber con la atención', @Success OUTPUT;
+EXEC PROC_calificar '1004','San Jose Jaral 2','2023-10-12','3','5','3','Estaba sucio, pero la comida estaba rica', @Success OUTPUT;
+EXEC PROC_calificar '1005','San Jose Jaral 2','2023-10-12','3','4','4','Deben limpiar más seguido', @Success OUTPUT;
+EXEC PROC_calificar '1001','San Jose Jaral 1','2023-10-12','2','4','2','Buena comida', @Success OUTPUT;
+EXEC PROC_calificar '1000','San Jose Jaral 1','2023-10-12','2','5','2','Deliciosa comida, pero faltó atención', @Success OUTPUT;
+EXEC PROC_calificar '1001','Amp. Emiliana Zapata','2023-10-12','4','5','3',null, @Success OUTPUT;
+EXEC PROC_calificar '1002','Amp. Emiliana Zapata','2023-10-12','1','2','5','Pésimo, sucio muy sucio pero me dieron buena atención', @Success OUTPUT;
+EXEC PROC_calificar '1003','DIF Central','2023-10-12','5','4','1','Bonito lugar y rica comida, pero fue mala la atención', @Success OUTPUT;
+EXEC PROC_calificar '1004','Cardenas del Rio','2023-10-12','4','3','3','En general bien', @Success OUTPUT;
+EXEC PROC_calificar '1005','Cinco de Mayo','2023-10-12','3','3','2',null, @Success OUTPUT;
+EXEC PROC_calificar '1000','DIF Central','2023-10-10','5','4','4','Muy buen servicio',@Success OUTPUT;
+EXEC PROC_calificar '1001','DIF Central','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','Los Olivos','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','Los Olivos','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1005','Los Olivos','2023-10-12','3','3','2',null, @Success OUTPUT;
+EXEC PROC_calificar '1000','Adolfo Lopez Mateos','2023-10-10','5','4','4','Muy buen servicio',@Success OUTPUT;
+EXEC PROC_calificar '1001','Cinco de Mayo','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','Los Olivos','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','Hogares','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1005','Hogares','2023-10-12','3','3','2',null, @Success OUTPUT;
+EXEC PROC_calificar '1000','Adolfo Lopez Mateos','2023-10-10','5','4','4','Muy buen servicio',@Success OUTPUT;
+EXEC PROC_calificar '1001','Hogares','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','Adolfo Lopez Mateos','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','Rinconada Bonfil','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1001','Adolfo Lopez Mateos','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','Hogares','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','Rinconada Bonfil','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1005','Hogares','2023-10-12','3','3','2',null, @Success OUTPUT;
+EXEC PROC_calificar '1000','San juan Bosco','2023-10-10','5','4','4','Muy buen servicio',@Success OUTPUT;
+EXEC PROC_calificar '1001','Mexico Nuevo','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','Las Peñitas','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','Mexico Nuevo','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1001','Hogares','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','Mexico Nuevo','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','Rinconada Bonfil','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1001','Las Peñitas','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','Rancho Castro','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','Las Peñitas','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1005','Rancho Castro','2023-10-12','3','3','2',null, @Success OUTPUT;
+EXEC PROC_calificar '1000','Las Peñitas','2023-10-10','5','4','4','Muy buen servicio',@Success OUTPUT;
+EXEC PROC_calificar '1001','Rancho Castro','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','Rancho Castro','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','San juan Bosco','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1001','Villas de las Palmas','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','UAM','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','Villas de las Palmas','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1001','Villas de las Palmas','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','UAM','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','Villas de las Palmas','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1005','Rancho Castro','2023-10-12','3','3','2',null, @Success OUTPUT;
+EXEC PROC_calificar '1000','UAM','2023-10-10','5','4','4','Muy buen servicio',@Success OUTPUT;
+EXEC PROC_calificar '1001','UAM','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','Bosques de Ixtacala','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','Bosques de Ixtacala','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1000','Lomas de Tepalcapa','2023-10-12','4','5','3',null, @Success OUTPUT;
+EXEC PROC_calificar '1001','Lomas de Tepalcapa','2023-10-12','5','2','1','Muy horrible comida', @Success OUTPUT;
+EXEC PROC_calificar '1002','Villa de las Torres','2023-10-12','5','5','4','Excelente servicio', @Success OUTPUT;
+EXEC PROC_calificar '1003','Lomas de Tepalcapa','2023-10-12','4','4','3','Muy limpio el lugar, me quedaron a deber con la atención', @Success OUTPUT;
+EXEC PROC_calificar '1004','Villa de las Torres','2023-10-12','3','5','3','Estaba sucio, pero la comida estaba rica', @Success OUTPUT;
+EXEC PROC_calificar '1005','Villa de las Torres','2023-10-12','3','4','4','Deben limpiar más seguido', @Success OUTPUT;
+EXEC PROC_calificar '1001','Cristobal Higuera','2023-10-12','2','4','2','Buena comida', @Success OUTPUT;
+EXEC PROC_calificar '1000','Lomas de Guadalupe','2023-10-12','2','5','2','Deliciosa comida, pero faltó atención', @Success OUTPUT;
+EXEC PROC_calificar '1001','Lomas de Guadalupe','2023-10-12','4','5','3',null, @Success OUTPUT;
+EXEC PROC_calificar '1002','Lomas de Guadalupe','2023-10-12','1','2','5','Pésimo, sucio muy sucio pero me dieron buena atención', @Success OUTPUT;
+EXEC PROC_calificar '1003','Lazara Cardenas','2023-10-12','5','4','1','Bonito lugar y rica comida, pero fue mala la atención', @Success OUTPUT;
+EXEC PROC_calificar '1004','Lazara Cardenas','2023-10-12','4','3','3','En general bien', @Success OUTPUT;
+EXEC PROC_calificar '1005','Cinco de Mayo','2023-10-12','3','3','2',null, @Success OUTPUT;
+EXEC PROC_calificar '1000','El Chaparral','2023-10-10','5','4','4','Muy buen servicio',@Success OUTPUT;
+EXEC PROC_calificar '1001','El Chaparral','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','El Chaparral','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','El Chaparral','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1001','Primero de Septiembre','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','Las Aguilas','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','Primero de Septiembre','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1001','Tierra de en Medio','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','Seguridad Publica','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','Seguridad Publica','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1000','Tierra de en Medio Plano Norte 1','2023-10-12','4','5','3',null, @Success OUTPUT;
+EXEC PROC_calificar '1001','Prados de Ixtacala 2DA SECC.','2023-10-12','5','2','1','Muy horrible comida', @Success OUTPUT;
+EXEC PROC_calificar '1002','Tierra de en Medio','2023-10-12','5','5','4','Excelente servicio', @Success OUTPUT;
+EXEC PROC_calificar '1003','Prados de Ixtacala 2DA SECC.','2023-10-12','4','4','3','Muy limpio el lugar, me quedaron a deber con la atención', @Success OUTPUT;
+EXEC PROC_calificar '1005','Las Aguilas','2023-10-12','3','3','2',null, @Success OUTPUT;
+EXEC PROC_calificar '1000','Las Peñitas','2023-10-10','5','4','4','Muy buen servicio',@Success OUTPUT;
+EXEC PROC_calificar '1001','Primero de Septiembre','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','Las Aguilas','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','Primero de Septiembre','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1001','El Cerrito','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','Villas de la Hacienda','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','Villas de las Palmas','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1001','El Cerrito','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','Villas de la Hacienda','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','Villas de la Hacienda','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1005','Seguridad Publica','2023-10-12','3','3','2',null, @Success OUTPUT;
+EXEC PROC_calificar '1000','Villas de la Hacienda','2023-10-10','5','4','4','Muy buen servicio',@Success OUTPUT;
+EXEC PROC_calificar '1001','Villas de la Hacienda','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','Seguridad Publica','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','Seguridad Publica','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1000','San Juan Ixtacala Plano Norte 1','2023-10-12','4','5','3',null, @Success OUTPUT;
+EXEC PROC_calificar '1001','Prados de Ixtacala 2DA SECC.','2023-10-12','5','2','1','Muy horrible comida', @Success OUTPUT;
+EXEC PROC_calificar '1002','Prados de Ixtacala 2DA SECC.','2023-10-12','5','5','4','Excelente servicio', @Success OUTPUT;
+EXEC PROC_calificar '1003','Prados de Ixtacala 2DA SECC.','2023-10-12','4','4','3','Muy limpio el lugar, me quedaron a deber con la atención', @Success OUTPUT;
+EXEC PROC_calificar '1004','Prados de Ixtacala 2DA SECC.','2023-10-12','3','5','3','Estaba sucio, pero la comida estaba rica', @Success OUTPUT;
+EXEC PROC_calificar '1005','Villa Jardin','2023-10-12','3','4','4','Deben limpiar más seguido', @Success OUTPUT;
+EXEC PROC_calificar '1001','Villa Jardin','2023-10-12','2','4','2','Buena comida', @Success OUTPUT;
+EXEC PROC_calificar '1000','AMP. Cristobal Higuera','2023-10-12','2','5','2','Deliciosa comida, pero faltó atención', @Success OUTPUT;
+EXEC PROC_calificar '1001','Villa Jardin','2023-10-12','4','5','3',null, @Success OUTPUT;
+EXEC PROC_calificar '1002','AMP. Cristobal Higuera','2023-10-12','1','2','5','Pésimo, sucio muy sucio pero me dieron buena atención', @Success OUTPUT;
+EXEC PROC_calificar '1003','Lazara Cardenas','2023-10-12','5','4','1','Bonito lugar y rica comida, pero fue mala la atención', @Success OUTPUT;
+EXEC PROC_calificar '1004','CAMP. Adolfo Lopez Mateos','2023-10-12','4','3','3','En general bien', @Success OUTPUT;
+EXEC PROC_calificar '1005','CAMP. Adolfo Lopez Mateos','2023-10-12','3','3','2',null, @Success OUTPUT;
+EXEC PROC_calificar '1000','Lomas de San Miguel','2023-10-10','5','4','4','Muy buen servicio',@Success OUTPUT;
+EXEC PROC_calificar '1001','Lomas de San Miguel','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','San Juan Ixtacala Plano Norte 2','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','San Juan Ixtacala Plano Norte 2','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1002','Los Olivios 2','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','Los Olivios 2','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1001','Los Olivios 2','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','Los Olivios 2','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','Villas de la Hacienda','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+EXEC PROC_calificar '1005','Seguridad Publica','2023-10-12','3','3','2',null, @Success OUTPUT;
+EXEC PROC_calificar '1000','Villas de la Hacienda','2023-10-10','5','4','4','Muy buen servicio',@Success OUTPUT;
+
+
 --EXEC PROC_calificar '','','','','','','',@Success OUTPUT;
 --EXEC PROC_calificar '','','','','','','',@Success OUTPUT;
 --SELECT @Success AS Success
