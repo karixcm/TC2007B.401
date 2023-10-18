@@ -1295,6 +1295,15 @@ BEGIN
 END;
 GO
 
+--procedure para generar el inventario de un comedor
+CREATE OR ALTER PROCEDURE PROC_inventarioCom
+	@FolioComedor INT
+AS
+BEGIN
+	SELECT Cantidad, Nombre, Presentacion, FechaCad FROM Inventario WHERE FolioComedor LIKE @FolioComedor;
+END;
+GO
+
 USE ComedorBD
 GO
 
@@ -1595,8 +1604,6 @@ EXEC PROC_calificar '1002','Los Olivios 2','2023-10-17','5','5','5','Hoy fue per
 EXEC PROC_calificar '1003','Villas de la Hacienda','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
 EXEC PROC_calificar '1005','Seguridad Publica','2023-10-12','3','3','2',null, @Success OUTPUT;
 EXEC PROC_calificar '1000','Villas de la Hacienda','2023-10-10','5','4','4','Muy buen servicio',@Success OUTPUT;
-
-
 --EXEC PROC_calificar '','','','','','','',@Success OUTPUT;
 --EXEC PROC_calificar '','','','','','','',@Success OUTPUT;
 --SELECT @Success AS Success
@@ -1635,7 +1642,6 @@ EXEC PROC_registrarAsistencia '2023-02-01','1','1004','4',@Success OUTPUT;
 EXEC PROC_registrarAsistencia '2023-02-01','1','1002','4',@Success OUTPUT;
 EXEC PROC_registrarAsistencia '2023-03-13','1','1010','5',@Success OUTPUT;
 EXEC PROC_registrarAsistencia '2023-09-03','0','1009','23',@Success OUTPUT;
-
 EXEC PROC_registrarAsistencia '2023-10-17','0','1003','2',@Success OUTPUT;
 EXEC PROC_registrarAsistencia '2023-10-17','1','1001','3',@Success OUTPUT;
 EXEC PROC_registrarAsistencia '2023-04-13','1','1002','4',@Success OUTPUT;
@@ -1668,7 +1674,6 @@ EXEC PROC_registrarAsistencia '2023-02-01','1','1004','8',@Success OUTPUT;
 EXEC PROC_registrarAsistencia '2023-02-01','1','1002','7',@Success OUTPUT;
 EXEC PROC_registrarAsistencia '2023-03-13','1','1010','12',@Success OUTPUT;
 EXEC PROC_registrarAsistencia '2023-09-03','0','1009','29',@Success OUTPUT;
-
 EXEC PROC_registrarAsistencia '2023-06-17','1','1001','1',@Success OUTPUT;
 EXEC PROC_registrarAsistencia '2023-06-13','1','1002','1',@Success OUTPUT;
 EXEC PROC_registrarAsistencia '2023-07-13','1','1004','1',@Success OUTPUT;
@@ -1722,12 +1727,27 @@ EXEC PROC_generarReporte '4','2023-09-10','Reporte de salud e higiene','Tenemos 
 EXEC PROC_generarReporte '3','2023-10-17','Reporte de seguridad','Hay una pandilla por el barrio','Antes de 72 horas','0', @Success OUTPUT;
 EXEC PROC_generarReporte '2','2023-10-02','Reporte de incidentes','Hubo una disputa entre clientes que terminó en una riña','Sin rango asignado','0', @Success OUTPUT;
 EXEC PROC_generarReporte '5','2023-06-12','Otro','Tenemos falta de personal, no podemos atender a tantos asistentes','Antes de 72 horas','0', @Success OUTPUT;
-SELECT @Success AS Success
-SELECT* FROM Reportes;
+--SELECT @Success AS Success
+--SELECT* FROM Reportes;
 GO
 
 DECLARE @Success AS BIT
 EXEC PROC_marcarReporteCompletado '100002', @Success OUTPUT;
+--SELECT @Success AS Success
+--SELECT* FROM Reportes;
+GO
+
+DECLARE @Success AS BIT
+EXEC PROC_agregarInventario '2023-10-20','Frijoles','50','Bolsa de 100 gramos','1',@Success OUTPUT;
+EXEC PROC_agregarInventario '2023-10-30','Manzanas','5','Piezas de manzana','1',@Success OUTPUT;
+EXEC PROC_agregarInventario '2023-11-01','Arroz','1','Bolsa de 1k','1',@Success OUTPUT;
+EXEC PROC_agregarInventario '2023-10-12','Tomates','10','Piezas de tomate','1',@Success OUTPUT;
+EXEC PROC_agregarInventario '2023-10-23','Cebolla','4','Piezas de cebolla','1',@Success OUTPUT;
+EXEC PROC_agregarInventario '2023-10-26','Spaghetti','250','Gramos','1',@Success OUTPUT;
+EXEC PROC_agregarInventario '2023-10-28','Champiñones','3','Latas','1',@Success OUTPUT;
+EXEC PROC_agregarInventario '2023-10-29','Avena','500','gramos','1',@Success OUTPUT;
+EXEC PROC_agregarInventario '2023-11-02','Sandía','1','Pieza','1',@Success OUTPUT;
+EXEC PROC_agregarInventario '2023-11-05','Huevo','18','Pieza','2',@Success OUTPUT;
 SELECT @Success AS Success
-SELECT* FROM Reportes;
+EXEC PROC_inventarioCom '1';
 GO
