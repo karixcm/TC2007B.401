@@ -27,6 +27,9 @@ DROP TABLE IF EXISTS Condicion;
 DROP TABLE IF EXISTS Nacionalidad;
 DROP TABLE IF EXISTS Calificaciones;
 DROP TABLE IF EXISTS Apertura;
+DROP TABLE IF EXISTS Reportes;
+DROP TABLE IF EXISTS TipoReporte;
+DROP TABLE IF EXISTS Urgecia;
 
 CREATE TABLE Administrador(
 	IDAdmin INT PRIMARY KEY IDENTITY(100,1),
@@ -156,6 +159,31 @@ CREATE TABLE Calificaciones(
 	CalComida INT NOT NULL,
 	CalAtencion INT NOT NULL,
 	Comentario VARCHAR(150) NOT NULL
+);
+
+CREATE TABLE TipoReporte(
+	IDReporte INT PRIMARY KEY IDENTITY(210,1),
+	Nombre VARCHAR(30)
+);
+
+CREATE TABLE Urgencia(
+	IDUrgencia INT PRIMARY KEY IDENTITY(220,1),
+	Nombre VARCHAR(25)
+);
+
+CREATE TABLE Reportes(
+	FolioReporte INT PRIMARY KEY IDENTITY(100000, 1),
+	Tipo INT NOT NULL
+		CONSTRAINT FK_Reportes_TipoReporte FOREIGN KEY (Tipo)
+		REFERENCES TipoReporte(IDReporte)
+		ON UPDATE NO ACTION
+		ON DELETE NO ACTION,
+	Descripcion VARCHAR(250) NOT NULL,
+	UrgenciaSol INT NOT NULL
+		CONSTRAINT FK_Reportes_Urgencia FOREIGN KEY (UrgenciaSol)
+		REFERENCES Urgencia(IDUrgencia)
+		ON UPDATE NO ACTION
+		ON DELETE NO ACTION
 );
 
 USE ComedorBD;
@@ -1267,19 +1295,25 @@ EXEC PROC_altaComedor '42','Tierra de en Medio','Hacienda de la Flor #14 Col. Ti
 GO
 
 DECLARE @Success AS BIT
-EXEC PROC_calificar '1000','Cinco de Mayo','2022-10-12','4','5','3',null, @Success OUTPUT;
-EXEC PROC_calificar '1001','México 86','2022-10-12','5','2','1','Muy horrible comida', @Success OUTPUT;
-EXEC PROC_calificar '1002','Cardenas del Rio','2022-10-12','5','5','4','Excelente servicio', @Success OUTPUT;
-EXEC PROC_calificar '1003','México 86','2022-10-12','4','4','3','Muy limpio el lugar, me quedaron a deber con la atención', @Success OUTPUT;
-EXEC PROC_calificar '1004','Cinco de Mayo','2022-10-12','3','5','3','Estaba sucio, pero la comida estaba rica', @Success OUTPUT;
-EXEC PROC_calificar '1005','Monte María','2022-10-12','3','4','4','Deben limpiar más seguido', @Success OUTPUT;
-EXEC PROC_calificar '1001','Monte María','2022-10-12','2','4','2','Buena comida', @Success OUTPUT;
-EXEC PROC_calificar '1000','Cardenas del Rio','2022-10-12','2','5','2','Deliciosa comida, pero faltó atención', @Success OUTPUT;
-EXEC PROC_calificar '1001','Cinco de Mayo','2022-10-12','4','5','3',null, @Success OUTPUT;
-EXEC PROC_calificar '1002','México 86','2022-10-12','1','2','5','Pésimo, sucio muy sucio pero me dieron buena atención', @Success OUTPUT;
-EXEC PROC_calificar '1003','México 86','2022-10-12','5','4','1','Bonito lugar y rica comida, pero fue mala la atención', @Success OUTPUT;
-EXEC PROC_calificar '1004','Cardenas del Rio','2022-10-12','4','3','3','En general bien', @Success OUTPUT;
-EXEC PROC_calificar '1005','Cinco de Mayo','2022-10-12','3','3','2',null, @Success OUTPUT;
+EXEC PROC_calificar '1000','Cinco de Mayo','2023-10-12','4','5','3',null, @Success OUTPUT;
+EXEC PROC_calificar '1001','México 86','2023-10-12','5','2','1','Muy horrible comida', @Success OUTPUT;
+EXEC PROC_calificar '1002','Cardenas del Rio','2023-10-12','5','5','4','Excelente servicio', @Success OUTPUT;
+EXEC PROC_calificar '1003','México 86','2023-10-12','4','4','3','Muy limpio el lugar, me quedaron a deber con la atención', @Success OUTPUT;
+EXEC PROC_calificar '1004','Cinco de Mayo','2023-10-12','3','5','3','Estaba sucio, pero la comida estaba rica', @Success OUTPUT;
+EXEC PROC_calificar '1005','Monte María','2023-10-12','3','4','4','Deben limpiar más seguido', @Success OUTPUT;
+EXEC PROC_calificar '1001','Monte María','2023-10-12','2','4','2','Buena comida', @Success OUTPUT;
+EXEC PROC_calificar '1000','Cardenas del Rio','2023-10-12','2','5','2','Deliciosa comida, pero faltó atención', @Success OUTPUT;
+EXEC PROC_calificar '1001','Cinco de Mayo','2023-10-12','4','5','3',null, @Success OUTPUT;
+EXEC PROC_calificar '1002','México 86','2023-10-12','1','2','5','Pésimo, sucio muy sucio pero me dieron buena atención', @Success OUTPUT;
+EXEC PROC_calificar '1003','México 86','2023-10-12','5','4','1','Bonito lugar y rica comida, pero fue mala la atención', @Success OUTPUT;
+EXEC PROC_calificar '1004','Cardenas del Rio','2023-10-12','4','3','3','En general bien', @Success OUTPUT;
+EXEC PROC_calificar '1005','Cinco de Mayo','2023-10-12','3','3','2',null, @Success OUTPUT;
+EXEC PROC_calificar '1000','Cinco de Mayo','2023-10-10','5','4','4','Muy buen servicio',@Success OUTPUT;
+EXEC PROC_calificar '1001','Cinco de Mayo','2023-10-11','4','3','5','Hay que mejorar la comida',@Success OUTPUT;
+EXEC PROC_calificar '1002','Cinco de Mayo','2023-10-17','5','5','5','Hoy fue perfecto',@Success OUTPUT;
+EXEC PROC_calificar '1003','Cinco de Mayo','2023-10-16','3','2','1','No me gustó',@Success OUTPUT;
+--EXEC PROC_calificar '','','','','','','',@Success OUTPUT;
+--EXEC PROC_calificar '','','','','','','',@Success OUTPUT;
 --SELECT @Success AS Success
 GO
 
