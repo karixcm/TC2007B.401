@@ -1269,7 +1269,7 @@ BEGIN
 END;
 GO
 
-
+--procedure para obtener el id de usuario a partir del curp
 CREATE OR ALTER PROCEDURE PROC_obtenerIDcCURP
 	@CURP CHAR(18)
 AS
@@ -1278,6 +1278,7 @@ BEGIN
 END;
 GO
 
+--procedure para obtener el id de usuario a partir del cel
 CREATE OR ALTER PROCEDURE PROC_obtenerIDcCel
 	@Cel VARCHAR(15)
 AS
@@ -1286,6 +1287,7 @@ BEGIN
 END;
 GO
 
+--procedure para obtener el id de usuario a partir del correo
 CREATE OR ALTER PROCEDURE PROC_obtenerIDcCorreo
 	@Correo VARCHAR(30)
 AS
