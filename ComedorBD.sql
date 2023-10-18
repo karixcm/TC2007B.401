@@ -1089,6 +1089,7 @@ BEGIN
 	DECLARE @Total AS INT;
 	SELECT @Total = (@GananciaHoy * 13);
 	SET @TotalGanancias = @Total;
+	SELECT @TotalGanancias AS GananciasHoy
 	PRINT @Total;
 END;
 GO
@@ -1438,8 +1439,8 @@ EXEC PROC_calificar '1003','Cinco de Mayo','2023-10-16','3','2','1','No me gustó
 GO
 
 DECLARE @Success AS BIT
-EXEC PROC_registrarAsistencia '2023-04-13','1','1003','1',@Success OUTPUT;
-EXEC PROC_registrarAsistencia '2023-04-13','0','1001','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-10-17','1','1003','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-10-17','0','1001','1',@Success OUTPUT;
 EXEC PROC_registrarAsistencia '2023-04-13','0','1002','1',@Success OUTPUT;
 EXEC PROC_registrarAsistencia '2023-04-13','0','1004','1',@Success OUTPUT;
 EXEC PROC_registrarAsistencia '2023-03-12','0','1001','1',@Success OUTPUT;
