@@ -172,12 +172,13 @@ CREATE TABLE Urgencia(
 );
 
 CREATE TABLE Reportes(
+	FolioReporte INT PRIMARY KEY IDENTITY(100000, 1),
 	FolioComedor INT NOT NULL
 		CONSTRAINT FK_Reportes_Comedor FOREIGN KEY (FolioComedor)
 		REFERENCES Comedor(FolioComedor)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION,
-	FolioReporte INT PRIMARY KEY IDENTITY(100000, 1),
+	Fecha DATE NOT NULL,
 	Tipo INT NOT NULL
 		CONSTRAINT FK_Reportes_TipoReporte FOREIGN KEY (Tipo)
 		REFERENCES TipoReporte(IDReporte)
@@ -188,7 +189,8 @@ CREATE TABLE Reportes(
 		CONSTRAINT FK_Reportes_Urgencia FOREIGN KEY (UrgenciaSol)
 		REFERENCES Urgencia(IDUrgencia)
 		ON UPDATE NO ACTION
-		ON DELETE NO ACTION
+		ON DELETE NO ACTION,
+	Estado INT NOT NULL
 );
 
 USE ComedorBD;
@@ -1166,7 +1168,105 @@ BEGIN
 END;
 GO
 
+--procedure para generar un reporte
+CREATE OR ALTER PROCEDURE PROC_generarReporte
+	@FolioComedor INT,
+	@Fecha DATE,
+	@Tipo VARCHAR(30),
+	@Descripcion VARCHAR(250),
+	@Urgencia VARCHAR(25),
+	@Estado INT,
+	@Success AS BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY
+		DECLARE @IDTipo INT;
+		SELECT @IDTipo = (SELECT IDReporte FROM TipoReporte WHERE Nombre LIKE @Tipo);
+		DECLARE @IDUrgencia INT;
+		SELECT @IDUrgencia = (SELECT IDUrgencia FROM Urgencia WHERE Nombre LIKE @Urgencia);
+		INSERT INTO Reportes(FolioComedor, Fecha, Tipo, Descripcion, UrgenciaSol, Estado)
+		VALUES (@FolioComedor, @Fecha, @IDTipo, @Descripcion, @IDUrgencia, @Estado);
+		SET @Success = 1;
+	END TRY
+	BEGIN CATCH
+		SET @Success = 0;
+	END CATCH
+	RETURN @Success
+END;
+GO
 
+
+--procedure para marcar reporte como completado
+CREATE OR ALTER PROCEDURE PROC_marcarReporteCompletado
+	@FolioReporte INT,
+	@Success AS BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY
+		DECLARE @EstadoActual INT;
+		SELECT @EstadoActual = (SELECT Estado FROM Reportes WHERE FolioReporte LIKE @FolioReporte);
+		IF (@EstadoActual != 1)
+		BEGIN
+			UPDATE Reportes
+			SET Estado = '1'
+			WHERE FolioReporte LIKE @FolioReporte;
+			SET @Success = 1;
+		END
+		ELSE
+		BEGIN
+			SET @Success = 0;
+		END
+	END TRY
+	BEGIN CATCH
+		SET @Success = 0;
+	END CATCH
+	RETURN @Success
+END;
+GO
+
+--procedure para marcar reporte como no completado
+CREATE OR ALTER PROCEDURE PROC_marcarReporteNoCompletado
+	@FolioReporte INT,
+	@Success AS BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY
+		DECLARE @EstadoActual INT;
+		SELECT @EstadoActual = (SELECT Estado FROM Reportes WHERE FolioReporte LIKE @FolioReporte);
+		IF (@EstadoActual != 0)
+		BEGIN
+			UPDATE Reportes
+			SET Estado = '0'
+			WHERE FolioReporte LIKE @FolioReporte;
+			SET @Success = 1;
+		END
+		ELSE
+		BEGIN
+			SET @Success = 0;
+		END
+	END TRY
+	BEGIN CATCH
+		SET @Success = 0;
+	END CATCH
+	RETURN @Success
+END;
+GO
+
+--procedure para filtrar reportes completados
+CREATE OR ALTER PROCEDURE PROC_reportesCompletados
+AS
+BEGIN
+	SELECT* FROM Reportes WHERE Estado LIKE '1';
+END;
+GO
+
+--procedure para filtrar reportes no completados
+CREATE OR ALTER PROCEDURE PROC_reportesNoCompletados
+AS
+BEGIN
+	SELECT* FROM Reportes WHERE Estado LIKE '0';
+END;
+GO
 
 USE ComedorBD
 GO
@@ -1207,6 +1307,21 @@ INSERT INTO Condicion(Cond) VALUES ('Trabajador/a informal');
 INSERT INTO Condicion(Cond) VALUES ('Otra condición');
 INSERT INTO Condicion(Cond) VALUES ('No aplica');
 --SELECT* FROM Condicion
+GO
+
+INSERT INTO TipoReporte(Nombre) VALUES ('Reporte de seguridad');
+INSERT INTO TipoReporte(Nombre) VALUES ('Reporte de salud e higiene');
+INSERT INTO TipoReporte(Nombre) VALUES ('Reporte de incidentes');
+INSERT INTO TipoReporte(Nombre) VALUES ('Reporte de mantenimiento');
+INSERT INTO TipoReporte(Nombre) VALUES ('Otro');
+GO
+
+INSERT INTO Urgencia(Nombre) VALUES ('Inmediato');
+INSERT INTO Urgencia(Nombre) VALUES ('Menos de 30');
+INSERT INTO Urgencia(Nombre) VALUES ('Menos de 2 horas');
+INSERT INTO Urgencia(Nombre) VALUES ('Antes de 24 horas');
+INSERT INTO Urgencia(Nombre) VALUES ('Antes de 72 horas');
+INSERT INTO Urgencia(Nombre) VALUES ('Sin rango asignado');
 GO
 
 --SELECT* FROM Usuario
@@ -1348,10 +1463,26 @@ EXEC PROC_apertura '1','2023-10-15','12:30:02',@Success OUTPUT;
 --SELECT @Success AS Success
 GO
 
---SELECT* FROM Apertura
-GO
-
 DECLARE @Success AS BIT
 EXEC PROC_cierre '1','2023-10-15','16:02:15',@Success OUTPUT;
 --SELECT @Success AS Success
+GO
+
+DECLARE @Success AS BIT
+EXEC PROC_generarReporte '1','2023-10-17','Reporte de seguridad','Se metieron a robar','Sin rango asignado','0', @Success OUTPUT;
+EXEC PROC_generarReporte '2','2023-10-16','Reporte de salud e higiene','Hay chinches','Antes de 72 horas','0', @Success OUTPUT;
+EXEC PROC_generarReporte '3','2023-09-15','Reporte de incidentes','La cocinera se enfermó','Antes de 24 horas','0', @Success OUTPUT;
+EXEC PROC_generarReporte '1','2023-08-16','Reporte de mantenimiento','Hay una fuga de gas','Inmediato','0', @Success OUTPUT;
+EXEC PROC_generarReporte '4','2023-09-10','Reporte de salud e higiene','Tenemos un foco de infección de gripa','Sin rango asignado','0', @Success OUTPUT;
+EXEC PROC_generarReporte '3','2023-10-17','Reporte de seguridad','Hay una pandilla por el barrio','Antes de 72 horas','0', @Success OUTPUT;
+EXEC PROC_generarReporte '2','2023-10-02','Reporte de incidentes','Hubo una disputa entre clientes que terminó en una riña','Sin rango asignado','0', @Success OUTPUT;
+EXEC PROC_generarReporte '5','2023-06-12','Otro','Tenemos falta de personal, no podemos atender a tantos asistentes','Antes de 72 horas','0', @Success OUTPUT;
+SELECT @Success AS Success
+SELECT* FROM Reportes;
+GO
+
+DECLARE @Success AS BIT
+EXEC PROC_marcarReporteCompletado '100002', @Success OUTPUT;
+SELECT @Success AS Success
+SELECT* FROM Reportes;
 GO
