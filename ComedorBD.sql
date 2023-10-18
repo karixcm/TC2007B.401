@@ -29,7 +29,7 @@ DROP TABLE IF EXISTS Calificaciones;
 DROP TABLE IF EXISTS Apertura;
 DROP TABLE IF EXISTS Reportes;
 DROP TABLE IF EXISTS TipoReporte;
-DROP TABLE IF EXISTS Urgecia;
+DROP TABLE IF EXISTS Urgencia;
 
 CREATE TABLE Administrador(
 	IDAdmin INT PRIMARY KEY IDENTITY(100,1),
@@ -101,7 +101,6 @@ CREATE TABLE Usuario(
 	Cel VARCHAR(15),
 	Correo VARCHAR(30)
 );
-
 
 CREATE TABLE Pariente(
 	Pariente1 INT NOT NULL
@@ -1020,7 +1019,7 @@ GO
 --procedure para registrar asistencia
 CREATE OR ALTER PROCEDURE PROC_registrarAsistencia
 	@Fecha DATE,
-	@Donacion CHAR,
+	@Donacion INT,
 	@IDUsuario INT,
 	@FolioComedor INT,
 	@Success AS BIT OUTPUT
@@ -1355,12 +1354,12 @@ GO
 --SELECT* FROM Usuario
 DECLARE @Success AS BIT
 EXEC PROC_altaUsuario 'Karla','Cruz','Muñiz','CUMK030414MDFRXRA9','México','F','2003-04-14','No aplica','5567866976','karla.cruzmz@gmail.com', @Success OUTPUT;
-EXEC PROC_altaUsuario 'Leonel','Cruz','Alcántara','CUAL021125HVERXRA9','Guatemala','M','2002-11-25','No aplica','5532544142','leonelcalc@gmail.com', @Success OUTPUT;
-EXEC PROC_altaUsuario 'Erik','Soto','Cano','CUDKE85H4NME96HJF9', 'Argentina','M','2003-04-25','Persona perteneciente al colectivo LGBTQ+','5567890987','erik@mail.com', @Success OUTPUT;
+EXEC PROC_altaUsuario 'Leonel','Cruz','Alcántara','CUAL021125HVERXRA9','Guatemala','F','2002-11-25','No aplica','5532544142','leonelcalc@gmail.com', @Success OUTPUT;
+EXEC PROC_altaUsuario 'Erik','Soto','Cano','CUDKE85H4NME96HJF9', 'Argentina','F','2003-04-25','Persona perteneciente al colectivo LGBTQ+','5567890987','erik@mail.com', @Success OUTPUT;
 EXEC PROC_altaUsuario 'Brisa','Estrada','Ortiz','EAOBRUEIT854HFMD38','El Salvador','F','2003-05-28','Mujer embarazada','5589723423','brisa@mail.com', @Success OUTPUT;
-EXEC PROC_altaUsuario 'Juan','Carlo','Carro','JCS234HDGS6789JDH7','Argentina','M','2002-06-12','Persona en condición de calle','5567890987','juanca@gmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Juan','Carlo','Carro','JCS234HDGS6789JDH7','Argentina','F','2002-06-12','Persona en condición de calle','5567890987','juanca@gmail.com',@Success OUTPUT;
 EXEC PROC_altaUsuario 'Pepe','Luis','Moreno','HSJDKSEWUTYFHD7856','Cuba','M','2002-07-12','No aplica','5585463275','pepeca@gmail.com',@Success OUTPUT;
-EXEC PROC_altaUsuario 'Patricio','Gonzales','Romo','M6GDSTEXUASYWE7856','México','M','2002-07-13','Persona en condición de calle','5657863426','pattgonro@gmail.com',@Success OUTPUT;
+EXEC PROC_altaUsuario 'Patricio','Gonzales','Romo','M6GDSTEXUASYWE7856','México','F','2002-07-13','Persona en condición de calle','5657863426','pattgonro@gmail.com',@Success OUTPUT;
 EXEC PROC_altaUsuario 'Lorena','Delgado','Mendonza','LDMREHDUS85746FHC7','Guatemala','F','2003-08-10','Trabajador/a informal','5576859403','lorenitadm1404@hotmail.com',@Success OUTPUT;
 EXEC PROC_altaUsuario 'Lauren','Soria','Castro','HIJDJSNE38475HFJD9','Republica Dominicana','F','2001-03-14','Menor de edad','5674839203','lauso@mail.mx',@Success OUTPUT;
 EXEC PROC_altaUsuario 'Santiago','Mondragon','Sanchez','SANTHI67DH47FH28EK','El Salvador','M','2001-10-19','Persona indígena','5647890987','santimond@yahoo.com',@Success OUTPUT;
@@ -1619,7 +1618,87 @@ EXEC PROC_registrarAsistencia '2023-01-13','0','1000','3',@Success OUTPUT;
 EXEC PROC_registrarAsistencia '2023-01-01','0','1004','4',@Success OUTPUT;
 EXEC PROC_registrarAsistencia '2023-01-01','0','1002','4',@Success OUTPUT;
 EXEC PROC_registrarAsistencia '2023-02-13','0','1010','5',@Success OUTPUT;
-EXEC PROC_registrarAsistencia '2023-08-03','1','1009','23',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-09-03','1','1009','23',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-11-17','1','1003','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-11-17','0','1001','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-05-13','0','1002','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-05-13','0','1004','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-04-12','0','1001','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-02-03','1','1012','3',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-07-23','0','1010','5',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-01-24','1','1008','8',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-06-30','0','1007','42',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-07-14','1','1005','33',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-08-11','0','1003','12',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-02-13','0','1000','3',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-02-01','0','1004','4',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-02-01','0','1002','4',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-03-13','0','1010','5',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-09-03','1','1009','23',@Success OUTPUT;
+
+EXEC PROC_registrarAsistencia '2023-10-17','1','1003','2',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-10-17','0','1001','3',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-04-13','0','1002','4',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-04-13','0','1004','5',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-03-12','0','1001','6',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-01-03','1','1012','7',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-06-23','0','1010','8',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-12-24','1','1008','9',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-05-30','0','1007','43',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-06-14','1','1005','35',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-07-11','0','1003','11',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-01-13','0','1000','5',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-01-01','0','1004','2',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-01-01','0','1002','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-02-13','0','1010','8',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-09-03','1','1009','13',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-11-17','1','1003','4',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-11-17','0','1001','5',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-05-13','0','1002','6',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-05-13','0','1004','7',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-04-12','0','1001','8',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-02-03','1','1012','32',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-07-23','0','1010','12',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-01-24','1','1008','12',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-06-30','0','1007','43',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-07-14','1','1005','31',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-08-11','0','1003','11',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-02-13','0','1000','9',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-02-01','0','1004','8',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-02-01','0','1002','7',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-03-13','0','1010','12',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-09-03','1','1009','29',@Success OUTPUT;
+
+EXEC PROC_registrarAsistencia '2023-06-17','0','1001','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-06-13','0','1002','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-07-13','0','1004','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-07-12','0','1001','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-07-03','1','1012','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-08-23','0','1010','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-08-24','1','1008','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-09-30','0','1007','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-10-14','1','1005','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-10-11','0','1003','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-10-17','0','1001','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-10-13','0','1002','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-10-13','0','1004','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-11-12','0','1001','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-11-03','1','1012','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-12-23','0','1010','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-12-24','1','1008','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-12-30','0','1007','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-12-14','1','1005','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-12-11','0','1003','1',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-03-13','0','1000','8',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-04-01','0','1004','8',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-04-01','0','1002','8',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-04-13','0','1010','8',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-05-03','1','1009','8',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-06-13','0','1000','8',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-06-01','0','1004','8',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-08-01','0','1002','8',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-08-13','0','1010','8',@Success OUTPUT;
+EXEC PROC_registrarAsistencia '2023-09-03','1','1009','8',@Success OUTPUT;
 --EXEC PROC_registrarAsistencia '','','','',@Success OUTPUT;
 --SELECT @Success AS Success
 GO
