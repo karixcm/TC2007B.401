@@ -52,7 +52,7 @@ GO
 --GO
 
 --DECLARE @Success AS BIT
---SELECT* FROM Administrador
+--SELECT* FROM Comedor
 --EXEC PROC_logInComedor 'Com01','DIFATCOM01', @Success OUTPUT;
 --SELECT @Success AS Success
 --GO
@@ -67,4 +67,13 @@ GO
 --EXEC PROC_altaUsuario 'Aldo','Gonzales','Espinoza','ALGOE6758JHGF89TR6','Mexico','N','2001-05-16','No aplica','5573389876','aldogon@tec.mx',@Success OUTPUT;
 --SELECT @Success AS Success
 --SELECT * FROM Usuario
+--GO
+
+--EXEC PROC_comedorDelMes '10','2022';
+--GO
+
+--EXEC PROC_reportesCompletados;
+--GO
+
+--EXEC PROC_reportesNoCompletados;
 --GO
