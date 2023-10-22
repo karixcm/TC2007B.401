@@ -55,7 +55,7 @@ CREATE TABLE Comedor(
 	Nombre VARCHAR(50) NOT NULL,
 	Ubicacion VARCHAR(80) NOT NULL,
 	Apertura DATE NOT NULL,
-	Usuario VARCHAR(10) NOT NULL, 
+	Usuario VARCHAR(10) NOT NULL UNIQUE, 
 	ContraComedor VARCHAR(80) NOT NULL,
 	Estado INT NOT NULL
 		CONSTRAINT FK_Comedor_Estado FOREIGN KEY (Estado)
